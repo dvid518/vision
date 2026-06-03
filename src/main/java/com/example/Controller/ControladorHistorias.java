@@ -10,11 +10,11 @@ import com.example.View.VentanaPrincipal;
 
 public class ControladorHistorias {
     private final PanelHistorias ph;
-    private final VentanaPrincipal v;
+    private final VentanaPrincipal vp;
     private final ArrayList<Historia> historias;
-    public ControladorHistorias(VentanaPrincipal v) {
-        this.ph=v.getPanelHistorias();
-        this.v=v;
+    public ControladorHistorias(VentanaPrincipal vp) {
+        this.ph=vp.getPanelHistorias();
+        this.vp=vp;
         historias=new ArrayList<>();
     }
 
@@ -45,7 +45,7 @@ public class ControladorHistorias {
         historias.add(h);
         showHistorias();
         clearHistoria();
-        v.showExito("Historia creada correctamente");
+        vp.showExito("Historia creada correctamente");
     }
 
     public void editHistoria() {
@@ -59,7 +59,7 @@ public class ControladorHistorias {
         h.setObservaciones(ph.getTxtObservaciones().getText());
         showHistorias();
         clearHistoria();
-        v.showExito("Historia editada correctamente");
+        vp.showExito("Historia editada correctamente");
     }
 
     public void deleteHistoria() {
@@ -70,7 +70,7 @@ public class ControladorHistorias {
         historias.remove(h);
         showHistorias();
         clearHistoria();
-        v.showExito("Historia eliminada correctamente");
+        vp.showExito("Historia eliminada correctamente");
     }
 
     public void searchHistoria() {
@@ -102,11 +102,11 @@ public class ControladorHistorias {
     public Historia targetHistoria(String dni) {
         for (Historia h:historias) {
             if (h.getDniPaciente().equals(dni)) {
-                v.showExito("Historia encontrada correctamente");
+                vp.showExito("Historia encontrada correctamente");
                 return h;
             }
         }
-        v.showError("No se encontró la historia");
+        vp.showError("No se encontró la historia");
         return null;
     }
 
