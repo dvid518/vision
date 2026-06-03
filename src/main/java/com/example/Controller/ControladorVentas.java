@@ -43,6 +43,7 @@ public class ControladorVentas {
         ventas.add(v);
         showVentas();
         clearVenta();
+        vp.showExito("Venta creada correctamente");
     }
 
     public void searchVenta() {
@@ -70,9 +71,11 @@ public class ControladorVentas {
     public Venta targetVenta(String dni) {
         for (Venta v:ventas) {
             if (v.getDniPaciente().equals(dni)) {
+                vp.showExito("Venta encontrada correctamente");
                 return v;
             }
         }
+        vp.showError("No se encontró la venta");
         return null;
     }
 
