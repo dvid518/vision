@@ -16,17 +16,14 @@ public class PanelHistorias extends JPanel {
     private final JTextField txtAlergias;
     private final JTextField txtGraduacion;
     private final JTextField txtObservaciones;
-
     private final JButton btnRegistrar;
     private final JButton btnEditar;
     private final JButton btnEliminar;
     private final JButton btnBuscar;
-
     private final JTable tabla;
 
     public PanelHistorias() {
         setLayout(new BorderLayout());
-
         JPanel formulario=new JPanel(new GridLayout(5,2));
 
         formulario.add(new JLabel("DNI Paciente"));
@@ -55,12 +52,10 @@ public class PanelHistorias extends JPanel {
         btnEditar=new JButton("Editar");
         btnEliminar=new JButton("Eliminar");
         btnBuscar=new JButton("Buscar");
-
         botones.add(btnRegistrar);
         botones.add(btnEditar);
         botones.add(btnEliminar);
         botones.add(btnBuscar);
-
         tabla=new JTable();
 
         add(formulario, BorderLayout.NORTH);

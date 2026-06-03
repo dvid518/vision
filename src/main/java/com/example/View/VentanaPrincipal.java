@@ -4,10 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
@@ -18,7 +18,6 @@ public class VentanaPrincipal extends JFrame {
     private final PanelHistorias panelHistorias;
     private final PanelProductos panelProductos;
     private final PanelVentas panelVentas;
-
     private final JLabel lblEstado;
 
     public VentanaPrincipal() {
@@ -26,9 +25,7 @@ public class VentanaPrincipal extends JFrame {
         setSize(1200,700);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-
         JPanel menu=new JPanel();
-
         JButton btnPacientes=new JButton("Pacientes");
         JButton btnConsultas=new JButton("Consultas");
         JButton btnHistorias=new JButton("Historias");
@@ -62,31 +59,34 @@ public class VentanaPrincipal extends JFrame {
         btnProductos.addActionListener(e -> cards.show(contenido, "PRODUCTOS"));
         btnVentas.addActionListener(e -> cards.show(contenido, "VENTAS"));
 
-        lblEstado=new JLabel("");
-        lblEstado.setHorizontalAlignment(SwingConstants.RIGHT);
-        lblEstado.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-
+        lblEstado=new JLabel("", SwingConstants.LEFT);
+        lblEstado.setOpaque(false);
+        lblEstado.setVisible(false);
+        lblEstado.setBounds(850, 620, 300, 30);
+        getLayeredPane().add(lblEstado, JLayeredPane.POPUP_LAYER);
         setLayout(new BorderLayout());
-
         add(menu, BorderLayout.NORTH);
         add(contenido, BorderLayout.CENTER);
-        add(lblEstado, BorderLayout.SOUTH);
     }
 
     public void showError(String msg) {
         lblEstado.setForeground(Color.RED);
-        lblEstado.setText(msg);
-        cleanLuego();
+        msg(msg);
     }
 
     public void showExito(String msg) {
         lblEstado.setForeground(Color.GREEN);
-        lblEstado.setText(msg);
-        cleanLuego();
+        msg(msg);
     }
 
+    public void msg(String msg) {
+        lblEstado.setText(msg);
+        lblEstado.setVisible(true);
+        cleanLuego();
+    }
+    
     public void cleanLuego() {
-        Timer t=new Timer(3000, e -> {lblEstado.setText("");});
+        Timer t=new Timer(5000, e -> {lblEstado.setText("");});
         t.setRepeats(false);
         t.start();
     }

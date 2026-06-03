@@ -45,11 +45,10 @@ public class ControladorPacientes {
         } catch (NumberFormatException e) {
             return;
         }
-        String direccion=pp.getTxtDireccion().getText();
         if (!validatePaciente(dni, sexo, telefono, edad)) {
             return;
         }
-        Paciente p=new Paciente(dni, nombre, apellidos, sexo, telefono, edad, direccion);
+        Paciente p=new Paciente(dni, nombre, apellidos, sexo, telefono, edad);
         pacientes.add(p);
         showPacientes();
         clearPaciente();
@@ -68,9 +67,9 @@ public class ControladorPacientes {
         } catch (NumberFormatException e) {
             return;
         }
-        p.setDireccion(pp.getTxtDireccion().getText());
         showPacientes();
         clearPaciente();
+        v.showExito("Paciente editado correctamente");
     }
 
     public void deletePaciente() {
@@ -81,7 +80,7 @@ public class ControladorPacientes {
         pacientes.remove(p);
         showPacientes();
         clearPaciente();
-        v.showExito("Se eliminó el paciente correctamente");
+        v.showExito("Paciente eliminado correctamente");
     }
 
     public void searchPaciente() {
@@ -94,7 +93,6 @@ public class ControladorPacientes {
         pp.getTxtSexo().setText(p.getSexo());
         pp.getTxtTelefono().setText(p.getTelefono());
         pp.getTxtEdad().setText(String.valueOf(p.getEdad()));
-        pp.getTxtDireccion().setText(p.getDireccion());
         v.showExito("Paciente encontrado correctamente");
     }
 
@@ -102,14 +100,13 @@ public class ControladorPacientes {
     public void showPacientes() {
         DefaultTableModel m=new DefaultTableModel();
         m.addColumn("DNI");
-        m.addColumn("Nombres");
+        m.addColumn("Nombre");
         m.addColumn("Apellidos");
         m.addColumn("Sexo");
-        m.addColumn("Telefono");
+        m.addColumn("Teléfono");
         m.addColumn("Edad");
-        m.addColumn("Direccion");
         for (Paciente p:pacientes) {
-            m.addRow(new Object[]{p.getDni(), p.getNombre(), p.getApellidos(), p.getSexo(), p.getTelefono(), p.getEdad(), p.getDireccion()});
+            m.addRow(new Object[]{p.getDni(), p.getNombre(), p.getApellidos(), p.getSexo(), p.getTelefono(), p.getEdad()});
         }
         pp.getTabla().setModel(m);
     }
@@ -122,6 +119,7 @@ public class ControladorPacientes {
                 return p;
             }
         }
+        v.showError("No se encontró el paciente");
         return null;
     }
 
@@ -156,8 +154,8 @@ public class ControladorPacientes {
     }
     
     public boolean validateSexo(String sexo) {
-        boolean bin=sexo.equalsIgnoreCase("m")||sexo.equalsIgnoreCase("f");
-        return sexo.length()==1&&bin;
+        boolean s=sexo.equalsIgnoreCase("m")||sexo.equalsIgnoreCase("f");
+        return sexo.length()==1&&s;
     }
 
     public boolean validateTelefono(String telefono) {
@@ -176,7 +174,6 @@ public class ControladorPacientes {
         pp.getTxtSexo().setText("");
         pp.getTxtTelefono().setText("");
         pp.getTxtEdad().setText("");
-        pp.getTxtDireccion().setText("");
     }
 
     public ArrayList<Paciente> getPacientes() {

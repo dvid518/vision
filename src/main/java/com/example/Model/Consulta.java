@@ -5,18 +5,12 @@ public class Consulta {
     private String motivo;
     private String diagnostico;
     private String tratamiento;
-    private int dia;
-    private int mes;
-    private int ano;
 
-    public Consulta(String dniPaciente, String motivo, String diagnostico, String tratamiento, int dia, int mes, int ano) {
+    public Consulta(String dniPaciente, String motivo, String diagnostico, String tratamiento) {
         this.dniPaciente=dniPaciente;
         this.motivo=motivo;
         this.diagnostico=diagnostico;
         this.tratamiento=tratamiento;
-        this.dia=dia;
-        this.mes=mes;
-        this.ano=ano;
     }
 
     public String getDniPaciente() {
@@ -35,22 +29,6 @@ public class Consulta {
         return tratamiento;
     }
 
-    public int getDia() {
-        return dia;
-    }
-
-    public int getMes() {
-        return mes;
-    }
-
-    public int getAno() {
-        return ano;
-    }
-
-    public String getFecha() {
-        return dia+"-"+mes+"-"+ano;
-    }
-
     public void setDniPaciente(String dniPaciente) {
         this.dniPaciente=dniPaciente;
     }
@@ -65,17 +43,5 @@ public class Consulta {
 
     public void setTratamiento(String tratamiento) {
         this.tratamiento=tratamiento;
-    }
-
-    public void setDia(int dia) {
-        this.dia=dia;
-    }
-
-    public void setMes(int mes) {
-        this.mes=mes;
-    }
-
-    public void setAno(int ano) {
-        this.ano=ano;
     }
 }

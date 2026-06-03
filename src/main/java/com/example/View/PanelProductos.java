@@ -11,17 +11,15 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 
 public class PanelProductos extends JPanel {
-    private final JTextField txtCodigo;
+    private final JTextField txtId;
     private final JTextField txtNombre;
     private final JTextField txtCategoria;
     private final JTextField txtPrecio;
     private final JTextField txtStock;
-
     private final JButton btnRegistrar;
     private final JButton btnEditar;
     private final JButton btnEliminar;
     private final JButton btnBuscar;
-
     private final JTable tabla;
 
     public PanelProductos() {
@@ -30,8 +28,8 @@ public class PanelProductos extends JPanel {
         JPanel formulario=new JPanel(new GridLayout(5,2));
 
         formulario.add(new JLabel("Código"));
-        txtCodigo=new JTextField();
-        formulario.add(txtCodigo);
+        txtId=new JTextField();
+        formulario.add(txtId);
 
         formulario.add(new JLabel("Nombre"));
         txtNombre=new JTextField();
@@ -62,14 +60,13 @@ public class PanelProductos extends JPanel {
         botones.add(btnBuscar);
 
         tabla=new JTable();
-
         add(formulario, BorderLayout.NORTH);
         add(new JScrollPane(tabla), BorderLayout.CENTER);
         add(botones, BorderLayout.SOUTH);
     }
 
-    public JTextField getTxtCodigo() {
-        return txtCodigo;
+    public JTextField getTxtId() {
+        return txtId;
     }
 
     public JTextField getTxtNombre() {

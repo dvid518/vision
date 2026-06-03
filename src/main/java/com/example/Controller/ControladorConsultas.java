@@ -9,13 +9,12 @@ import com.example.View.PanelConsultas;
 import com.example.View.VentanaPrincipal;
 
 public class ControladorConsultas {
-    private final PanelConsultas p;
-
+    private final PanelConsultas pc;
+    private final VentanaPrincipal v;
     private final ArrayList<Consulta> consultas;
-
     public ControladorConsultas(VentanaPrincipal v) {
-        this.p=v.getPanelConsultas();
-
+        this.pc=v.getPanelConsultas();
+        this.v=v;
         consultas=new ArrayList<>();
     }
 
@@ -26,127 +25,90 @@ public class ControladorConsultas {
 
     // eventos
     public void eventos() {
-        p.getBtnRegistrar().addActionListener(e->createConsulta());
-        p.getBtnEditar().addActionListener(e->editConsulta());
-        p.getBtnEliminar().addActionListener(e->deleteConsulta());
-        p.getBtnBuscar().addActionListener(e->searchConsulta());
+        pc.getBtnRegistrar().addActionListener(e->createConsulta());
+        pc.getBtnEditar().addActionListener(e->editConsulta());
+        pc.getBtnEliminar().addActionListener(e->deleteConsulta());
+        pc.getBtnBuscar().addActionListener(e->searchConsulta());
     }
 
     // consultas
     public void createConsulta() {
-        String dni=p.getTxtDniPaciente().getText();
-        String motivo=p.getTxtMotivo().getText();
-        String diagnostico=p.getTxtDiagnostico().getText();
-        String tratamiento=p.getTxtTratamiento().getText();
-
-        int dia;
-        int mes;
-        int ano;
-
-        try {
-            dia=Integer.parseInt(p.getTxtDia().getText());
-            mes=Integer.parseInt(p.getTxtMes().getText());
-            ano=Integer.parseInt(p.getTxtAno().getText());
-        } catch (NumberFormatException e) {
-            return;
-        }
-
-        Consulta con=new Consulta(dni, motivo, diagnostico, tratamiento, dia, mes, ano);
-
-        consultas.add(con);
+        String dni=pc.getTxtDniPaciente().getText();
+        String motivo=pc.getTxtMotivo().getText();
+        String diagnostico=pc.getTxtDiagnostico().getText();
+        String tratamiento=pc.getTxtTratamiento().getText();
+        Consulta c=new Consulta(dni, motivo, diagnostico, tratamiento);
+        consultas.add(c);
         showConsultas();
         clearConsulta();
+        v.showExito("Consulta creada correctamente");
     }
 
     public void editConsulta() {
-        Consulta con=targetConsulta(p.getTxtDniPaciente().getText());
-
-        if (con==null) {
+        Consulta c=targetConsulta(pc.getTxtDniPaciente().getText());
+        if (c==null) {
             return;
         }
-
-        con.setMotivo(p.getTxtMotivo().getText());
-        con.setDiagnostico(p.getTxtDiagnostico().getText());
-        con.setTratamiento(p.getTxtTratamiento().getText());
-
-        try {
-            con.setDia(Integer.parseInt(p.getTxtDia().getText()));
-            con.setMes(Integer.parseInt(p.getTxtMes().getText()));
-            con.setAno(Integer.parseInt(p.getTxtAno().getText()));
-        } catch (NumberFormatException e) {
-            return;
-        }
-
+        c.setMotivo(pc.getTxtMotivo().getText());
+        c.setDiagnostico(pc.getTxtDiagnostico().getText());
+        c.setTratamiento(pc.getTxtTratamiento().getText());
         showConsultas();
         clearConsulta();
+        v.showExito("Consulta editada correctamente");
     }
 
     public void deleteConsulta() {
-        Consulta con=targetConsulta(p.getTxtDniPaciente().getText());
-
-        if (con==null) {
+        Consulta c=targetConsulta(pc.getTxtDniPaciente().getText());
+        if (c==null) {
             return;
         }
-
-        consultas.remove(con);
-
+        consultas.remove(c);
         showConsultas();
         clearConsulta();
+        v.showExito("Consulta eliminada correctamente");
     }
 
     public void searchConsulta() {
-        Consulta con=targetConsulta(p.getTxtDniPaciente().getText());
-
-        if (con==null) {
+        Consulta c=targetConsulta(pc.getTxtDniPaciente().getText());
+        if (c==null) {
             return;
         }
-
-        p.getTxtMotivo().setText(con.getMotivo());
-        p.getTxtDiagnostico().setText(con.getDiagnostico());
-        p.getTxtTratamiento().setText(con.getTratamiento());
-
-        p.getTxtDia().setText(String.valueOf(con.getDia()));
-        p.getTxtMes().setText(String.valueOf(con.getMes()));
-        p.getTxtAno().setText(String.valueOf(con.getAno()));
+        pc.getTxtMotivo().setText(c.getMotivo());
+        pc.getTxtDiagnostico().setText(c.getDiagnostico());
+        pc.getTxtTratamiento().setText(c.getTratamiento());
     }
 
     // mostrar
     public void showConsultas() {
-        DefaultTableModel modelo=new DefaultTableModel();
-
-        modelo.addColumn("DNI");
-        modelo.addColumn("Motivo");
-        modelo.addColumn("Diagnóstico");
-        modelo.addColumn("Tratamiento");
-        modelo.addColumn("Fecha");
-
-        for (Consulta con:consultas) {
-            modelo.addRow(new Object[]{con.getDniPaciente(), con.getMotivo(), con.getDiagnostico(), con.getTratamiento(), con.getFecha()});
+        DefaultTableModel m=new DefaultTableModel();
+        m.addColumn("DNI");
+        m.addColumn("Motivo");
+        m.addColumn("Diagnóstico");
+        m.addColumn("Tratamiento");
+        for (Consulta c:consultas) {
+            m.addRow(new Object[]{c.getDniPaciente(), c.getMotivo(), c.getDiagnostico(), c.getTratamiento()});
         }
-
-        p.getTabla().setModel(modelo);
+        pc.getTabla().setModel(m);
     }
 
     // búsqueda
     public Consulta targetConsulta(String dni) {
-        for (Consulta con:consultas) {
-            if (con.getDniPaciente().equals(dni)) {
-                return con;
+        for (Consulta c:consultas) {
+            if (c.getDniPaciente().equals(dni)) {
+                v.showExito("Consulta encontrada correctamente");
+                return c;
             }
         }
-
+        v.showError("No se encontró la consulta");
         return null;
     }
 
     // utilidades
     public void clearConsulta() {
-        p.getTxtDniPaciente().setText("");
-        p.getTxtMotivo().setText("");
-        p.getTxtDiagnostico().setText("");
-        p.getTxtTratamiento().setText("");
-        p.getTxtDia().setText("");
-        p.getTxtMes().setText("");
-        p.getTxtAno().setText("");
+        pc.getTxtDniPaciente().setText("");
+        pc.getTxtMotivo().setText("");
+        pc.getTxtDiagnostico().setText("");
+        pc.getTxtTratamiento().setText("");
     }
 
     public ArrayList<Consulta> getConsultas() {

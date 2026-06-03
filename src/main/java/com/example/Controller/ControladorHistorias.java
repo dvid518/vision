@@ -4,18 +4,17 @@ import java.util.ArrayList;
 
 import javax.swing.table.DefaultTableModel;
 
-import com.example.Model.HistoriaClinica;
+import com.example.Model.Historia;
 import com.example.View.PanelHistorias;
 import com.example.View.VentanaPrincipal;
 
 public class ControladorHistorias {
-    private final PanelHistorias p;
-
-    private final ArrayList<HistoriaClinica> historias;
-
+    private final PanelHistorias ph;
+    private final VentanaPrincipal v;
+    private final ArrayList<Historia> historias;
     public ControladorHistorias(VentanaPrincipal v) {
-        this.p=v.getPanelHistorias();
-
+        this.ph=v.getPanelHistorias();
+        this.v=v;
         historias=new ArrayList<>();
     }
 
@@ -26,111 +25,101 @@ public class ControladorHistorias {
 
     // eventos
     public void eventos() {
-        p.getBtnRegistrar().addActionListener(e->createHistoria());
-        p.getBtnEditar().addActionListener(e->editHistoria());
-        p.getBtnEliminar().addActionListener(e->deleteHistoria());
-        p.getBtnBuscar().addActionListener(e->searchHistoria());
+        ph.getBtnRegistrar().addActionListener(e->createHistoria());
+        ph.getBtnEditar().addActionListener(e->editHistoria());
+        ph.getBtnEliminar().addActionListener(e->deleteHistoria());
+        ph.getBtnBuscar().addActionListener(e->searchHistoria());
     }
 
     // historias
     public void createHistoria() {
-        String dni=p.getTxtDniPaciente().getText();
-        String antecedentes=p.getTxtAntecedentes().getText();
-        String alergias=p.getTxtAlergias().getText();
-        String graduacion=p.getTxtGraduacion().getText();
-        String observaciones=p.getTxtObservaciones().getText();
-
+        String dni=ph.getTxtDniPaciente().getText();
+        String antecedentes=ph.getTxtAntecedentes().getText();
+        String alergias=ph.getTxtAlergias().getText();
+        String graduacion=ph.getTxtGraduacion().getText();
+        String observaciones=ph.getTxtObservaciones().getText();
         if (targetHistoria(dni)!=null) {
             return;
         }
-
-        HistoriaClinica his=new HistoriaClinica(dni, antecedentes, alergias, graduacion, observaciones);
-
-        historias.add(his);
+        Historia h=new Historia(dni, antecedentes, alergias, graduacion, observaciones);
+        historias.add(h);
         showHistorias();
         clearHistoria();
+        v.showExito("Historia creada correctamente");
     }
 
     public void editHistoria() {
-        HistoriaClinica his=targetHistoria(p.getTxtDniPaciente().getText());
-
-        if (his==null) {
+        Historia h=targetHistoria(ph.getTxtDniPaciente().getText());
+        if (h==null) {
             return;
         }
-
-        his.setAntecedentes(p.getTxtAntecedentes().getText());
-        his.setAlergias(p.getTxtAlergias().getText());
-        his.setGraduacion(p.getTxtGraduacion().getText());
-        his.setObservaciones(p.getTxtObservaciones().getText());
-
+        h.setAntecedentes(ph.getTxtAntecedentes().getText());
+        h.setAlergias(ph.getTxtAlergias().getText());
+        h.setGraduacion(ph.getTxtGraduacion().getText());
+        h.setObservaciones(ph.getTxtObservaciones().getText());
         showHistorias();
         clearHistoria();
+        v.showExito("Historia editada correctamente");
     }
 
     public void deleteHistoria() {
-        HistoriaClinica his=targetHistoria(p.getTxtDniPaciente().getText());
-
-        if (his==null) {
+        Historia h=targetHistoria(ph.getTxtDniPaciente().getText());
+        if (h==null) {
             return;
         }
-
-        historias.remove(his);
-
+        historias.remove(h);
         showHistorias();
         clearHistoria();
+        v.showExito("Historia eliminada correctamente");
     }
 
     public void searchHistoria() {
-        HistoriaClinica his=targetHistoria(p.getTxtDniPaciente().getText());
-
-        if (his==null) {
+        Historia h=targetHistoria(ph.getTxtDniPaciente().getText());
+        if (h==null) {
             return;
         }
-
-        p.getTxtAntecedentes().setText(his.getAntecedentes());
-        p.getTxtAlergias().setText(his.getAlergias());
-        p.getTxtGraduacion().setText(his.getGraduacion());
-        p.getTxtObservaciones().setText(his.getObservaciones());
+        ph.getTxtAntecedentes().setText(h.getAntecedentes());
+        ph.getTxtAlergias().setText(h.getAlergias());
+        ph.getTxtGraduacion().setText(h.getGraduacion());
+        ph.getTxtObservaciones().setText(h.getObservaciones());
     }
 
     // mostrar
     public void showHistorias() {
-        DefaultTableModel modelo=new DefaultTableModel();
-
-        modelo.addColumn("DNI");
-        modelo.addColumn("Antecedentes");
-        modelo.addColumn("Alergias");
-        modelo.addColumn("Graduación");
-        modelo.addColumn("Observaciones");
-
-        for (HistoriaClinica his:historias) {
-            modelo.addRow(new Object[]{his.getDniPaciente(), his.getAntecedentes(), his.getAlergias(), his.getGraduacion(), his.getObservaciones()});
+        DefaultTableModel m=new DefaultTableModel();
+        m.addColumn("DNI");
+        m.addColumn("Antecedentes");
+        m.addColumn("Alergias");
+        m.addColumn("Graduación");
+        m.addColumn("Observaciones");
+        for (Historia h:historias) {
+            m.addRow(new Object[]{h.getDniPaciente(), h.getAntecedentes(), h.getAlergias(), h.getGraduacion(), h.getObservaciones()});
         }
-
-        p.getTabla().setModel(modelo);
+        ph.getTabla().setModel(m);
     }
 
     // búsqueda
-    public HistoriaClinica targetHistoria(String dni) {
-        for (HistoriaClinica his:historias) {
-            if (his.getDniPaciente().equals(dni)) {
-                return his;
+    public Historia targetHistoria(String dni) {
+        for (Historia h:historias) {
+            if (h.getDniPaciente().equals(dni)) {
+                v.showExito("Historia encontrada correctamente");
+                return h;
             }
         }
-
+        v.showError("No se encontró la historia");
         return null;
     }
 
     // utilidades
     public void clearHistoria() {
-        p.getTxtDniPaciente().setText("");
-        p.getTxtAntecedentes().setText("");
-        p.getTxtAlergias().setText("");
-        p.getTxtGraduacion().setText("");
-        p.getTxtObservaciones().setText("");
+        ph.getTxtDniPaciente().setText("");
+        ph.getTxtAntecedentes().setText("");
+        ph.getTxtAlergias().setText("");
+        ph.getTxtGraduacion().setText("");
+        ph.getTxtObservaciones().setText("");
     }
 
-    public ArrayList<HistoriaClinica> getHistorias() {
+    public ArrayList<Historia> getHistorias() {
         return historias;
     }
 }

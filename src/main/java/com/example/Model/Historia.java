@@ -1,13 +1,13 @@
 package com.example.Model;
 
-public class HistoriaClinica {
+public class Historia {
     private String dniPaciente;
     private String antecedentes;
     private String alergias;
     private String graduacion;
     private String observaciones;
 
-    public HistoriaClinica(String dniPaciente, String antecedentes, String alergias, String graduacion, String observaciones) {
+    public Historia(String dniPaciente, String antecedentes, String alergias, String graduacion, String observaciones) {
         this.dniPaciente=dniPaciente;
         this.antecedentes=antecedentes;
         this.alergias=alergias;

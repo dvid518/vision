@@ -9,13 +9,14 @@ import com.example.View.PanelVentas;
 import com.example.View.VentanaPrincipal;
 
 public class ControladorVentas {
-    private final PanelVentas p;
+    private final PanelVentas pv;
+    private final VentanaPrincipal vp;
 
     private final ArrayList<Venta> ventas;
 
-    public ControladorVentas(VentanaPrincipal v) {
-        p=v.getPanelVentas();
-
+    public ControladorVentas(VentanaPrincipal vp) {
+        this.pv=vp.getPanelVentas();
+        this.vp=vp;
         ventas=new ArrayList<>();
     }
 
@@ -26,78 +27,52 @@ public class ControladorVentas {
 
     // eventos
     public void eventos() {
-        p.getBtnRegistrar().addActionListener(e->createVenta());
-        p.getBtnBuscar().addActionListener(e->searchVenta());
+        pv.getBtnRegistrar().addActionListener(e->createVenta());
+        pv.getBtnBuscar().addActionListener(e->searchVenta());
     }
 
     // ventas
     public void createVenta() {
-        String dni=p.getTxtDniPaciente().getText();
-        String codigo=p.getTxtCodigoProducto().getText();
-
-        int cantidad;
-        int dia;
-        int mes;
-        int ano;
-
-        try {
-            cantidad=Integer.parseInt(p.getTxtCantidad().getText());
-            dia=Integer.parseInt(p.getTxtDia().getText());
-            mes=Integer.parseInt(p.getTxtMes().getText());
-            ano=Integer.parseInt(p.getTxtAno().getText());
-        } catch (NumberFormatException e) {
-            return;
-        }
-
+        String dni=pv.getTxtDniPaciente().getText();
+        String codigo=pv.getTxtCodigoProducto().getText();
+        int cantidad=Integer.parseInt(pv.getTxtCantidad().getText());
         if (!validateCantidad(cantidad)) {
             return;
         }
-
-        Venta ven=new Venta(dni, codigo, cantidad, dia, mes, ano);
-
-        ventas.add(ven);
+        Venta v=new Venta(dni, codigo, cantidad);
+        ventas.add(v);
         showVentas();
         clearVenta();
     }
 
     public void searchVenta() {
-        Venta ven=targetVenta(p.getTxtDniPaciente().getText());
-
-        if (ven==null) {
+        Venta v=targetVenta(pv.getTxtDniPaciente().getText());
+        if (v==null) {
             return;
         }
-
-        p.getTxtCodigoProducto().setText(ven.getCodigoProducto());
-        p.getTxtCantidad().setText(String.valueOf(ven.getCantidad()));
-        p.getTxtDia().setText(String.valueOf(ven.getDia()));
-        p.getTxtMes().setText(String.valueOf(ven.getMes()));
-        p.getTxtAno().setText(String.valueOf(ven.getAno()));
+        pv.getTxtCodigoProducto().setText(v.getCodigoProducto());
+        pv.getTxtCantidad().setText(String.valueOf(v.getCantidad()));
     }
 
     // mostrar
     public void showVentas() {
-        DefaultTableModel modelo=new DefaultTableModel();
-
-        modelo.addColumn("DNI");
-        modelo.addColumn("Producto");
-        modelo.addColumn("Cantidad");
-        modelo.addColumn("Fecha");
-
-        for (Venta ven:ventas) {
-            modelo.addRow(new Object[]{ven.getDniPaciente(), ven.getCodigoProducto(), ven.getCantidad(), ven.getFecha()});
+        DefaultTableModel m=new DefaultTableModel();
+        m.addColumn("DNI");
+        m.addColumn("Producto");
+        m.addColumn("Cantidad");
+        for (Venta v:ventas) {
+            m.addRow(new Object[]{v.getDniPaciente(), v.getCodigoProducto(), v.getCantidad()});
         }
-
-        p.getTabla().setModel(modelo);
+        pv.getTabla().setModel(m);
     }
 
     // búsqueda
     public Venta targetVenta(String dni) {
-        for (Venta ven:ventas) {
-            if (ven.getDniPaciente().equals(dni)) {
-                return ven;
+        for (Venta v:ventas) {
+            if (v.getDniPaciente().equals(dni)) {
+                return v;
             }
         }
-
         return null;
     }
 
@@ -108,12 +83,9 @@ public class ControladorVentas {
 
     // utilidades
     public void clearVenta() {
-        p.getTxtDniPaciente().setText("");
-        p.getTxtCodigoProducto().setText("");
-        p.getTxtCantidad().setText("");
-        p.getTxtDia().setText("");
-        p.getTxtMes().setText("");
-        p.getTxtAno().setText("");
+        pv.getTxtDniPaciente().setText("");
+        pv.getTxtCodigoProducto().setText("");
+        pv.getTxtCantidad().setText("");
     }
 
     public ArrayList<Venta> getVentas() {

@@ -14,19 +14,14 @@ public class PanelVentas extends JPanel {
     private final JTextField txtDniPaciente;
     private final JTextField txtCodigoProducto;
     private final JTextField txtCantidad;
-    private final JTextField txtDia;
-    private final JTextField txtMes;
-    private final JTextField txtAno;
-
     private final JButton btnRegistrar;
     private final JButton btnBuscar;
-
     private final JTable tabla;
 
     public PanelVentas() {
         setLayout(new BorderLayout());
 
-        JPanel formulario=new JPanel(new GridLayout(6,2));
+        JPanel formulario=new JPanel(new GridLayout(3,2));
 
         formulario.add(new JLabel("DNI Paciente"));
         txtDniPaciente=new JTextField();
@@ -40,18 +35,6 @@ public class PanelVentas extends JPanel {
         txtCantidad=new JTextField();
         formulario.add(txtCantidad);
 
-        formulario.add(new JLabel("Día"));
-        txtDia=new JTextField();
-        formulario.add(txtDia);
-
-        formulario.add(new JLabel("Mes"));
-        txtMes=new JTextField();
-        formulario.add(txtMes);
-
-        formulario.add(new JLabel("Año"));
-        txtAno=new JTextField();
-        formulario.add(txtAno);
-
         JPanel botones=new JPanel();
 
         btnRegistrar=new JButton("Registrar");
@@ -59,9 +42,7 @@ public class PanelVentas extends JPanel {
 
         botones.add(btnRegistrar);
         botones.add(btnBuscar);
-
         tabla=new JTable();
-
         add(formulario, BorderLayout.NORTH);
         add(new JScrollPane(tabla), BorderLayout.CENTER);
         add(botones, BorderLayout.SOUTH);
@@ -77,18 +58,6 @@ public class PanelVentas extends JPanel {
     
     public JTextField getTxtCantidad() {
         return txtCantidad;
-    }
-    
-    public JTextField getTxtDia() {
-        return txtDia;
-    }
-    
-    public JTextField getTxtMes() {
-        return txtMes;
-    }
-    
-    public JTextField getTxtAno() {
-        return txtAno;
     }
     
     public JButton getBtnRegistrar() {

@@ -7,16 +7,14 @@ public class Paciente {
     private String sexo;
     private String telefono;
     private int edad;
-    private String direccion;
 
-    public Paciente(String dni, String nombre, String apellidos, String sexo, String telefono, int edad, String direccion) {
+    public Paciente(String dni, String nombre, String apellidos, String sexo, String telefono, int edad) {
         this.dni=dni;
         this.nombre=nombre;
         this.apellidos=apellidos;
         this.sexo=sexo;
         this.telefono=telefono;
         this.edad=edad;
-        this.direccion=direccion;
     }
 
     public String getDni() {
@@ -43,10 +41,6 @@ public class Paciente {
         return edad;
     }
 
-    public String getDireccion() {
-        return direccion;
-    }
-
     public void setDni(String dni) {
         this.dni=dni;
     }
@@ -69,9 +63,5 @@ public class Paciente {
 
     public void setEdad(int edad) {
         this.edad=edad;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion=direccion;
     }
 }

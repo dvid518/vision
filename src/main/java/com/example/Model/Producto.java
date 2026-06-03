@@ -1,22 +1,22 @@
 package com.example.Model;
 
 public class Producto {
-    private String codigo;
+    private String id;
     private String nombre;
     private String categoria;
     private double precio;
     private int stock;
 
-    public Producto(String codigo, String nombre, String categoria, double precio, int stock) {
-        this.codigo=codigo;
+    public Producto(String id, String nombre, String categoria, double precio, int stock) {
+        this.id=id;
         this.nombre=nombre;
         this.categoria=categoria;
         this.precio=precio;
         this.stock=stock;
     }
 
-    public String getCodigo() {
-        return codigo;
+    public String getId() {
+        return id;
     }
 
     public String getNombre() {
@@ -35,8 +35,8 @@ public class Producto {
         return stock;
     }
 
-    public void setCodigo(String codigo) {
-        this.codigo=codigo;
+    public void setId(String id) {
+        this.id=id;
     }
 
     public void setNombre(String nombre) {
