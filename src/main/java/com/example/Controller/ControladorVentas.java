@@ -7,22 +7,26 @@ import javax.swing.table.DefaultTableModel;
 import com.example.Model.Venta;
 import com.example.View.PanelVentas;
 import com.example.View.VentanaPrincipal;
+import com.example.View.VistaConsola;
 
 public class ControladorVentas {
-    private final PanelVentas pv;
     private final VentanaPrincipal vp;
-
+    private final PanelVentas pv;
     private final ArrayList<Venta> ventas;
+    private final VistaConsola vc;
+    private final String controlador="ControladorVentas";
 
     public ControladorVentas(VentanaPrincipal vp) {
         this.pv=vp.getPanelVentas();
         this.vp=vp;
         ventas=new ArrayList<>();
+        vc=new VistaConsola();
     }
 
     public void start() {
         eventos();
         showVentas();
+        vc.adminStart(controlador);
     }
 
     // eventos
@@ -43,16 +47,18 @@ public class ControladorVentas {
         ventas.add(v);
         showVentas();
         clearVenta();
-        vp.showExito("Venta creada correctamente");
+        vp.showExitoCreateModel(controlador);
     }
 
     public void searchVenta() {
         Venta v=targetVenta(pv.getTxtDniPaciente().getText());
         if (v==null) {
+            vp.showErrorBusqueda(controlador);
             return;
         }
         pv.getTxtCodigoProducto().setText(v.getCodigoProducto());
         pv.getTxtCantidad().setText(String.valueOf(v.getCantidad()));
+        vp.showExitoBusqueda(controlador);
     }
 
     // mostrar
@@ -71,11 +77,9 @@ public class ControladorVentas {
     public Venta targetVenta(String dni) {
         for (Venta v:ventas) {
             if (v.getDniPaciente().equals(dni)) {
-                vp.showExito("Venta encontrada correctamente");
                 return v;
             }
         }
-        vp.showError("No se encontró la venta");
         return null;
     }
 
@@ -92,6 +96,7 @@ public class ControladorVentas {
     }
 
     public ArrayList<Venta> getVentas() {
+        vc.adminGetArrayList(controlador);
         return ventas;
     }
 }

@@ -7,20 +7,26 @@ import javax.swing.table.DefaultTableModel;
 import com.example.Model.Consulta;
 import com.example.View.PanelConsultas;
 import com.example.View.VentanaPrincipal;
+import com.example.View.VistaConsola;
 
 public class ControladorConsultas {
+    private final VentanaPrincipal vp;
     private final PanelConsultas pc;
-    private final VentanaPrincipal v;
     private final ArrayList<Consulta> consultas;
-    public ControladorConsultas(VentanaPrincipal v) {
-        this.pc=v.getPanelConsultas();
-        this.v=v;
+    private final VistaConsola vc;
+    private final String controlador="ControladorConsutas";
+
+    public ControladorConsultas(VentanaPrincipal vp) {
+        this.pc=vp.getPanelConsultas();
+        this.vp=vp;
         consultas=new ArrayList<>();
+        vc=new VistaConsola();
     }
 
     public void start() {
         eventos();
         showConsultas();
+        vc.adminStart(controlador);
     }
 
     // eventos
@@ -41,7 +47,8 @@ public class ControladorConsultas {
         consultas.add(c);
         showConsultas();
         clearConsulta();
-        v.showExito("Consulta creada correctamente");
+        vp.showExitoCreateModel(controlador);
+        vc.printConsulta(c);
     }
 
     public void editConsulta() {
@@ -54,7 +61,8 @@ public class ControladorConsultas {
         c.setTratamiento(pc.getTxtTratamiento().getText());
         showConsultas();
         clearConsulta();
-        v.showExito("Consulta editada correctamente");
+        vp.showExitoEditModel(controlador);
+        vc.printConsulta(c);
     }
 
     public void deleteConsulta() {
@@ -65,17 +73,19 @@ public class ControladorConsultas {
         consultas.remove(c);
         showConsultas();
         clearConsulta();
-        v.showExito("Consulta eliminada correctamente");
+        vp.showExitoDeleteModel(controlador);
     }
 
     public void searchConsulta() {
         Consulta c=targetConsulta(pc.getTxtDniPaciente().getText());
         if (c==null) {
+            vp.showErrorBusqueda(controlador);
             return;
         }
         pc.getTxtMotivo().setText(c.getMotivo());
         pc.getTxtDiagnostico().setText(c.getDiagnostico());
         pc.getTxtTratamiento().setText(c.getTratamiento());
+        vp.showExitoBusqueda(controlador);
     }
 
     // mostrar
@@ -89,17 +99,16 @@ public class ControladorConsultas {
             m.addRow(new Object[]{c.getDniPaciente(), c.getMotivo(), c.getDiagnostico(), c.getTratamiento()});
         }
         pc.getTabla().setModel(m);
+        vc.adminMsgTabla(controlador);
     }
 
     // búsqueda
     public Consulta targetConsulta(String dni) {
         for (Consulta c:consultas) {
             if (c.getDniPaciente().equals(dni)) {
-                v.showExito("Consulta encontrada correctamente");
                 return c;
             }
         }
-        v.showError("No se encontró la consulta");
         return null;
     }
 
@@ -109,9 +118,11 @@ public class ControladorConsultas {
         pc.getTxtMotivo().setText("");
         pc.getTxtDiagnostico().setText("");
         pc.getTxtTratamiento().setText("");
+        vc.adminClearConsulta(controlador);
     }
 
     public ArrayList<Consulta> getConsultas() {
+        vc.adminGetArrayList(controlador);
         return consultas;
     }
 }

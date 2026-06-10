@@ -19,12 +19,16 @@ public class VentanaPrincipal extends JFrame {
     private final PanelProductos panelProductos;
     private final PanelVentas panelVentas;
     private final JLabel lblEstado;
+    private final VistaConsola vc;
 
     public VentanaPrincipal() {
+        vc=new VistaConsola();
+        
         setTitle("20/20 Visión Excelente");
         setSize(1200,700);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+
         JPanel menu=new JPanel();
         JButton btnPacientes=new JButton("Pacientes");
         JButton btnConsultas=new JButton("Consultas");
@@ -68,17 +72,8 @@ public class VentanaPrincipal extends JFrame {
         add(menu, BorderLayout.NORTH);
         add(contenido, BorderLayout.CENTER);
     }
-
-    public void showError(String msg) {
-        lblEstado.setForeground(Color.RED);
-        msg(msg);
-    }
-
-    public void showExito(String msg) {
-        lblEstado.setForeground(Color.GREEN);
-        msg(msg);
-    }
-
+    
+    // métodos de mensajes en tiempo real
     public void msg(String msg) {
         lblEstado.setText(msg);
         lblEstado.setVisible(true);
@@ -89,6 +84,40 @@ public class VentanaPrincipal extends JFrame {
         Timer t=new Timer(5000, e -> {lblEstado.setText("");});
         t.setRepeats(false);
         t.start();
+    }
+    
+    public void showExito(String msg, String c) {
+        vc.adminMsg(msg, c);
+        lblEstado.setForeground(Color.GREEN);
+        msg(msg);
+    }
+
+    public void showError(String msg, String c) {
+        vc.adminErr(msg, c);
+        lblEstado.setForeground(Color.RED);
+        msg(msg);
+    }
+
+    // métodos de mensajes predeterminados de éxito
+    public void showExitoBusqueda(String c) {
+        showExito("Objeto encontrado correctamente", c);
+    }
+
+    public void showExitoCreateModel(String c) {
+        showExito("Objeto creado correctamente", c);
+    }
+
+    public void showExitoEditModel(String c) {
+        showExito("Objeto editado correctamente", c);
+    }
+
+    public void showExitoDeleteModel(String c) {
+        showExito("Objeto eliminado correctamente", c);
+    }
+
+    // métodos de mensajes predeterminados de error
+    public void showErrorBusqueda(String c) {
+        showError("Objeto no encontrado", c);
     }
     
     public PanelPacientes getPanelPacientes() {

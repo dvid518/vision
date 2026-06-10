@@ -7,20 +7,26 @@ import javax.swing.table.DefaultTableModel;
 import com.example.Model.Historia;
 import com.example.View.PanelHistorias;
 import com.example.View.VentanaPrincipal;
+import com.example.View.VistaConsola;
 
 public class ControladorHistorias {
-    private final PanelHistorias ph;
     private final VentanaPrincipal vp;
+    private final PanelHistorias ph;
     private final ArrayList<Historia> historias;
+    private final VistaConsola vc;
+    private final String controlador="ControladorHistorias";
+
     public ControladorHistorias(VentanaPrincipal vp) {
         this.ph=vp.getPanelHistorias();
         this.vp=vp;
         historias=new ArrayList<>();
+        vc=new VistaConsola();
     }
 
     public void start() {
         eventos();
         showHistorias();
+        vc.adminStart(controlador);
     }
 
     // eventos
@@ -45,7 +51,8 @@ public class ControladorHistorias {
         historias.add(h);
         showHistorias();
         clearHistoria();
-        vp.showExito("Historia creada correctamente");
+        vp.showExitoCreateModel(controlador);
+        vc.printHistoria(h);
     }
 
     public void editHistoria() {
@@ -59,7 +66,8 @@ public class ControladorHistorias {
         h.setObservaciones(ph.getTxtObservaciones().getText());
         showHistorias();
         clearHistoria();
-        vp.showExito("Historia editada correctamente");
+        vp.showExitoEditModel(controlador);
+        vc.printHistoria(h);
     }
 
     public void deleteHistoria() {
@@ -70,18 +78,20 @@ public class ControladorHistorias {
         historias.remove(h);
         showHistorias();
         clearHistoria();
-        vp.showExito("Historia eliminada correctamente");
+        vp.showExitoDeleteModel(controlador);
     }
 
     public void searchHistoria() {
         Historia h=targetHistoria(ph.getTxtDniPaciente().getText());
         if (h==null) {
+            vp.showErrorBusqueda(controlador);
             return;
         }
         ph.getTxtAntecedentes().setText(h.getAntecedentes());
         ph.getTxtAlergias().setText(h.getAlergias());
         ph.getTxtGraduacion().setText(h.getGraduacion());
         ph.getTxtObservaciones().setText(h.getObservaciones());
+        vp.showExitoBusqueda(controlador);
     }
 
     // mostrar
@@ -96,17 +106,16 @@ public class ControladorHistorias {
             m.addRow(new Object[]{h.getDniPaciente(), h.getAntecedentes(), h.getAlergias(), h.getGraduacion(), h.getObservaciones()});
         }
         ph.getTabla().setModel(m);
+        vc.adminMsgTabla(controlador);
     }
 
     // búsqueda
     public Historia targetHistoria(String dni) {
         for (Historia h:historias) {
             if (h.getDniPaciente().equals(dni)) {
-                vp.showExito("Historia encontrada correctamente");
                 return h;
             }
         }
-        vp.showError("No se encontró la historia");
         return null;
     }
 
@@ -120,6 +129,7 @@ public class ControladorHistorias {
     }
 
     public ArrayList<Historia> getHistorias() {
+        vc.adminGetArrayList(controlador);
         return historias;
     }
 }

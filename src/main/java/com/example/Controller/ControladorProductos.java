@@ -7,20 +7,26 @@ import javax.swing.table.DefaultTableModel;
 import com.example.Model.Producto;
 import com.example.View.PanelProductos;
 import com.example.View.VentanaPrincipal;
+import com.example.View.VistaConsola;
 
 public class ControladorProductos {
-    private final PanelProductos pp;
     private final VentanaPrincipal vp;
+    private final PanelProductos pp;
     private final ArrayList<Producto> productos;
+    private final VistaConsola vc;
+    private final String controlador="ControladorProductos";
+    
     public ControladorProductos(VentanaPrincipal vp) {
         this.pp=vp.getPanelProductos();
         this.vp=vp;
         productos=new ArrayList<>();
+        vc=new VistaConsola();
     }
 
     public void start() {
         eventos();
         showProductos();
+        vc.adminStart(controlador);
     }
 
     // eventos
@@ -51,7 +57,7 @@ public class ControladorProductos {
         productos.add(p);
         showProductos();
         clearProducto();
-        vp.showExito("Producto creado correctamente");
+        vp.showExitoCreateModel(id);
     }
 
     public void editProducto() {
@@ -69,7 +75,7 @@ public class ControladorProductos {
         }
         showProductos();
         clearProducto();
-        vp.showExito("Producto editado correctamente");
+        vp.showExitoEditModel(controlador);
     }
 
     public void deleteProducto() {
@@ -80,18 +86,20 @@ public class ControladorProductos {
         productos.remove(p);
         showProductos();
         clearProducto();
-        vp.showExito("Producto eliminado correctamente");
+        vp.showExitoDeleteModel(controlador);
     }
 
     public void searchProducto() {
         Producto p=targetProducto(pp.getTxtId().getText());
         if (p==null) {
+            vp.showErrorBusqueda(controlador);
             return;
         }
         pp.getTxtNombre().setText(p.getNombre());
         pp.getTxtCategoria().setText(p.getCategoria());
         pp.getTxtPrecio().setText(String.valueOf(p.getPrecio()));
         pp.getTxtStock().setText(String.valueOf(p.getStock()));
+        vp.showExitoBusqueda(controlador);
     }
 
     // mostrar
@@ -106,17 +114,16 @@ public class ControladorProductos {
             m.addRow(new Object[]{p.getId(), p.getNombre(), p.getCategoria(), p.getPrecio(), p.getStock()});
         }
         pp.getTabla().setModel(m);
+        vc.adminMsgTabla(controlador);
     }
 
     // búsqueda
     public Producto targetProducto(String id) {
         for (Producto p:productos) {
             if (p.getId().equals(id)) {
-                vp.showExito("Producto encontrado correctamente");
                 return p;
             }
         }
-        vp.showExito("No se encontró el producto");
         return null;
     }
 
@@ -130,6 +137,7 @@ public class ControladorProductos {
     }
 
     public ArrayList<Producto> getProductos() {
+        vc.adminGetArrayList(controlador);
         return productos;
     }
 }

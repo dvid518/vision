@@ -7,21 +7,26 @@ import javax.swing.table.DefaultTableModel;
 import com.example.Model.Paciente;
 import com.example.View.PanelPacientes;
 import com.example.View.VentanaPrincipal;
+import com.example.View.VistaConsola;
 
 public class ControladorPacientes {
+    private final VentanaPrincipal vp;
     private final PanelPacientes pp;
     private final ArrayList<Paciente> pacientes;
-    private final VentanaPrincipal v;
+    private final VistaConsola vc;
+    private final String controlador="ControladorPacientes";
 
-    public ControladorPacientes(VentanaPrincipal v) {
-        this.pp=v.getPanelPacientes();
-        this.v=v;
+    public ControladorPacientes(VentanaPrincipal vp) {
+        this.pp=vp.getPanelPacientes();
+        this.vp=vp;
         pacientes=new ArrayList<>();
+        vc=new VistaConsola();
     }
 
     public void start() {
         eventos();
         showPacientes();
+        vc.adminStart(controlador);
     }
 
     // eventos
@@ -52,7 +57,8 @@ public class ControladorPacientes {
         pacientes.add(p);
         showPacientes();
         clearPaciente();
-        v.showExito("Paciente creado correctamente");
+        vp.showExitoCreateModel(controlador);
+        vc.printPaciente(p);
     }
 
     public void editPaciente() {
@@ -69,7 +75,8 @@ public class ControladorPacientes {
         }
         showPacientes();
         clearPaciente();
-        v.showExito("Paciente editado correctamente");
+        vp.showExitoEditModel(controlador);
+        vc.printPaciente(p);
     }
 
     public void deletePaciente() {
@@ -80,12 +87,13 @@ public class ControladorPacientes {
         pacientes.remove(p);
         showPacientes();
         clearPaciente();
-        v.showExito("Paciente eliminado correctamente");
+        vp.showExitoDeleteModel(controlador);
     }
 
     public void searchPaciente() {
         Paciente p=targetPaciente(pp.getTxtDni().getText());
         if (p==null) {
+            vp.showErrorBusqueda(controlador);
             return;
         }
         pp.getTxtNombre().setText(p.getNombre());
@@ -93,7 +101,7 @@ public class ControladorPacientes {
         pp.getTxtSexo().setText(p.getSexo());
         pp.getTxtTelefono().setText(p.getTelefono());
         pp.getTxtEdad().setText(String.valueOf(p.getEdad()));
-        v.showExito("Paciente encontrado correctamente");
+        vp.showExitoBusqueda(controlador);
     }
 
     // mostrar
@@ -115,11 +123,9 @@ public class ControladorPacientes {
     public Paciente targetPaciente(String dni) {
         for (Paciente p:pacientes) {
             if (p.getDni().equals(dni)) {
-                v.showExito("Paciente encontrado correctamente");
                 return p;
             }
         }
-        v.showError("No se encontró el paciente");
         return null;
     }
 
@@ -127,28 +133,30 @@ public class ControladorPacientes {
     public boolean validatePaciente(String dni, String sexo, String telefono, int edad) {
         boolean val=true;
         if (!validateDni(dni)) {
-            v.showError("El DNI no es correcto (8 dígitos)");
-            val=false;
-        }
-        if (!validateSexo(sexo)) {
-            v.showError("El sexo no es correcto (M/F)");
-            val=false;
-        }
-        if (!validateTelefono(telefono)) {
-            v.showError("El teléfono no es correcto (9 dígitos)");
-            val=false;
-        }
-        if (!validateEdad(edad)) {
-            v.showError("La edad no es correcta (Sólo números positivos)");
+            vp.showError("El DNI no es correcto (8 dígitos)", controlador);
             val=false;
         }
         if (targetPaciente(dni)!=null) {
-            v.showError("Ya existe un paciente con ese dni");
+            vp.showError("Ya existe un paciente con ese dni", controlador);
             val=false;
         }
+        if (!validateSexo(sexo)) {
+            vp.showError("El sexo no es correcto (M/F)", controlador);
+            val=false;
+        }
+        if (!validateTelefono(telefono)) {
+            vp.showError("El teléfono no es correcto (9 dígitos)", controlador);
+            val=false;
+        }
+        if (!validateEdad(edad)) {
+            vp.showError("La edad no es correcta (Sólo números positivos)", controlador);
+            val=false;
+        }
+        vc.errorValidateModel(controlador);
         return val;
     }
 
+    // validaciones
     public boolean validateDni(String dni) {
         return dni.length()==8;
     }
@@ -177,6 +185,7 @@ public class ControladorPacientes {
     }
 
     public ArrayList<Paciente> getPacientes() {
+        vc.adminGetArrayList(controlador);
         return pacientes;
     }
 }
