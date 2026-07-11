@@ -1,11 +1,14 @@
 package com.example.View;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.GridLayout;
 
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -40,10 +43,12 @@ public class PanelVentas extends JPanel {
 
         formulario.add(new JLabel("Paciente"));
         cbPaciente = new JComboBox<>();
+        configurarComboPaciente();
         formulario.add(cbPaciente);
 
         formulario.add(new JLabel("Producto"));
         cbProducto = new JComboBox<>();
+        configurarComboProducto();
         formulario.add(cbProducto);
 
         formulario.add(new JLabel("Cantidad"));
@@ -67,6 +72,62 @@ public class PanelVentas extends JPanel {
         add(formulario, BorderLayout.NORTH);
         add(new JScrollPane(tabla), BorderLayout.CENTER);
         add(botones, BorderLayout.SOUTH);
+    }
+
+    private void configurarComboPaciente() {
+        cbPaciente.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof Paciente p) {
+                    setText(p.getNombre() + " " + p.getApellidos() + " (DNI: " + p.getDni() + ")");
+                } else if (value == null) {
+                    setText("Seleccione un paciente");
+                }
+                return this;
+            }
+        });
+    }
+
+    private void configurarComboProducto() {
+        cbProducto.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof Producto p) {
+                    setText(p.getNombre() + " (S/" + String.format("%.2f", p.getPrecio()) + ")");
+                } else if (value == null) {
+                    setText("Seleccione un producto");
+                }
+                return this;
+            }
+        });
+    }
+
+    public void setPacientes(Paciente[] pacientes) {
+        cbPaciente.removeAllItems();
+        if (pacientes != null) {
+            for (Paciente p : pacientes) {
+                cbPaciente.addItem(p);
+            }
+        }
+    }
+
+    public void setProductos(Producto[] productos) {
+        cbProducto.removeAllItems();
+        if (productos != null) {
+            for (Producto p : productos) {
+                cbProducto.addItem(p);
+            }
+        }
+    }
+
+    public Paciente getPacienteSeleccionado() {
+        return (Paciente) cbPaciente.getSelectedItem();
+    }
+
+    public Producto getProductoSeleccionado() {
+        return (Producto) cbProducto.getSelectedItem();
     }
 
     public JTextField getTxtIdVenta() {

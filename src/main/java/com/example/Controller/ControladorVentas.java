@@ -161,7 +161,7 @@ public class ControladorVentas {
             return;
         }
 
-        v.setIdPaciente(paciente);
+        v.setPaciente(paciente);
         v.setProducto(producto);
         v.setCantidad(cantidad);
 

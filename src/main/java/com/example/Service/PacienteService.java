@@ -6,43 +6,44 @@ import com.example.DAO.PacienteDAO;
 import com.example.Model.Paciente;
 
 public class PacienteService {
-
-    private final PacienteDAO pacDAO=new PacienteDAO();
+    private final PacienteDAO pacDAO = new PacienteDAO();
 
     private boolean isValidDatos(Paciente p) {
-        if(p==null) {
+        if (p == null) {
             return false;
         }
         return isValidDni(p.getDni()) && isNotBlankAll(p);
     }
-    
+
     private boolean isValidDni(String dni) {
-        return dni!=null && dni.matches("\\d{8}[A-Za-z]?");
+        return dni != null && dni.matches("\\d{8}[A-Za-z]?");
     }
-    
+
     private boolean isNotBlank(String s) {
-        return s!=null&&!s.isBlank();
+        return s != null && !s.isBlank();
     }
 
     private boolean isNotBlankAll(Paciente p) {
-        return isNotBlank(p.getNombre()) && isNotBlank(p.getApellidos()) && isNotBlank(p.getSexo()) && isNotBlank(p.getTelefono()) && p.getFechaNacimiento()!=null;
+        return isNotBlank(p.getNombre()) && isNotBlank(p.getApellidos())
+                && isNotBlank(p.getSexo()) && isNotBlank(p.getTelefono())
+                && p.getFechaNacimiento() != null;
     }
 
     public boolean registerPaciente(Paciente p) {
-        if (p==null) {
+        if (p == null) {
             return false;
         }
         if (!isValidDatos(p)) {
             return true;
         }
-        if (pacDAO.searchDni(p.getDni())!=null) {
+        if (pacDAO.searchDni(p.getDni()) != null) {
             return false;
         }
         return pacDAO.insert(p);
     }
 
     public Paciente searchPacienteId(int id) {
-        if (id<=0) {
+        if (id <= 0) {
             return null;
         }
         return pacDAO.searchId(id);
@@ -60,10 +61,10 @@ public class PacienteService {
     }
 
     public boolean updatePaciente(Paciente p) {
-        if (p==null) {
+        if (p == null) {
             return false;
         }
-        if (p.getIdPaciente()<=0) {
+        if (p.getIdPaciente() <= 0) {
             return false;
         }
         if (!isValidDatos(p)) {
@@ -72,10 +73,31 @@ public class PacienteService {
         return pacDAO.update(p);
     }
 
-    public boolean deletePaciente(int id){
-        if (id<=0) {
+    public boolean deletePaciente(int id) {
+        if (id <= 0) {
             return false;
         }
         return pacDAO.delete(id);
+    }
+
+    public List<Paciente> buscarPorNombreOApellido(String texto) {
+        if (texto == null || texto.isBlank()) {
+            return new java.util.ArrayList<>();
+        }
+        return pacDAO.buscarPorNombreOApellido(texto);
+    }
+
+    public List<Paciente> buscarPorNombreYApellidos(String texto) {
+        if (texto == null || texto.isBlank()) {
+            return new java.util.ArrayList<>();
+        }
+        return pacDAO.buscarPorNombreYApellidos(texto);
+    }
+
+    public List<Paciente> buscarPorNombreExacto(String nombre) {
+        if (nombre == null || nombre.isBlank()) {
+            return new java.util.ArrayList<>();
+        }
+        return pacDAO.buscarPorNombreExacto(nombre);
     }
 }

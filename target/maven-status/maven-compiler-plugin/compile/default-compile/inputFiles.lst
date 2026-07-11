@@ -1,4 +1,5 @@
 C:\Users\david\Downloads\David\prog\vision\src\main\java\com\example\Controller\Controlador.java
+C:\Users\david\Downloads\David\prog\vision\src\main\java\com\example\Controller\ControladorCola.java
 C:\Users\david\Downloads\David\prog\vision\src\main\java\com\example\Controller\ControladorConsultas.java
 C:\Users\david\Downloads\David\prog\vision\src\main\java\com\example\Controller\ControladorHistorias.java
 C:\Users\david\Downloads\David\prog\vision\src\main\java\com\example\Controller\ControladorPacientes.java
@@ -16,6 +17,7 @@ C:\Users\david\Downloads\David\prog\vision\src\main\java\com\example\Model\Categ
 C:\Users\david\Downloads\David\prog\vision\src\main\java\com\example\Model\Consulta.java
 C:\Users\david\Downloads\David\prog\vision\src\main\java\com\example\Model\Historia.java
 C:\Users\david\Downloads\David\prog\vision\src\main\java\com\example\Model\Paciente.java
+C:\Users\david\Downloads\David\prog\vision\src\main\java\com\example\Model\PacientePrioridad.java
 C:\Users\david\Downloads\David\prog\vision\src\main\java\com\example\Model\Producto.java
 C:\Users\david\Downloads\David\prog\vision\src\main\java\com\example\Model\Venta.java
 C:\Users\david\Downloads\David\prog\vision\src\main\java\com\example\Service\CategoriaService.java
@@ -24,6 +26,7 @@ C:\Users\david\Downloads\David\prog\vision\src\main\java\com\example\Service\His
 C:\Users\david\Downloads\David\prog\vision\src\main\java\com\example\Service\PacienteService.java
 C:\Users\david\Downloads\David\prog\vision\src\main\java\com\example\Service\ProductoService.java
 C:\Users\david\Downloads\David\prog\vision\src\main\java\com\example\Service\VentaService.java
+C:\Users\david\Downloads\David\prog\vision\src\main\java\com\example\View\PanelColaEspera.java
 C:\Users\david\Downloads\David\prog\vision\src\main\java\com\example\View\PanelConsultas.java
 C:\Users\david\Downloads\David\prog\vision\src\main\java\com\example\View\PanelHistorias.java
 C:\Users\david\Downloads\David\prog\vision\src\main\java\com\example\View\PanelPacientes.java

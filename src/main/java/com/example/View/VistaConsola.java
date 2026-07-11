@@ -74,8 +74,17 @@ public class VistaConsola {
     }
 
     public void printProducto(Producto p) {
+        msg("ID: "+p.getIdProducto());
+        msg("Nombre: "+p.getNombre());
+        msg("Categoría: "+p.getCategoria().getNombre());
+        msg("Precio: "+p.getPrecio());
+        msg("Stock: "+p.getStock());
     }
-
+    
     public void printVenta(Venta v) {
+        msg("ID: "+v.getIdVenta());
+        msg("Paciente : "+v.getPaciente().getNombre());
+        msg("Producto: "+v.getProducto().getNombre());
+        msg("Cantidad: "+v.getCantidad());
     }
 }

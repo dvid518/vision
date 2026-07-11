@@ -9,6 +9,7 @@ public class Controlador {
     private final ControladorHistorias ch;
     private final ControladorProductos cpr;
     private final ControladorVentas cv;
+    private final ControladorCola ccl;
     private final VistaConsola vc;
 
     public Controlador(VentanaPrincipal v) {
@@ -17,6 +18,7 @@ public class Controlador {
         ch=new ControladorHistorias(v);
         cpr=new ControladorProductos(v);
         cv=new ControladorVentas(v);
+        ccl=new ControladorCola(v);
         vc=new VistaConsola();
     }
 
@@ -27,5 +29,6 @@ public class Controlador {
         ch.start();
         cpr.start();
         cv.start();
+        ccl.start();
     }
 }

@@ -1,13 +1,12 @@
 package com.example.Model;
 
 public class Venta {
-    private final int idVenta;
+    private int idVenta;
     private Paciente paciente;
     private Producto producto;
     private int cantidad;
 
     public Venta(Paciente paciente, Producto producto, int cantidad) {
-        this.idVenta=0;
         this.paciente=paciente;
         this.producto=producto;
         this.cantidad=cantidad;
@@ -29,7 +28,11 @@ public class Venta {
         return cantidad;
     }
 
-    public void setIdPaciente(Paciente paciente) {
+    public void setIdVenta(int idVenta) {
+        this.idVenta=idVenta;
+    }
+
+    public void setPaciente(Paciente paciente) {
         this.paciente=paciente;
     }
 
