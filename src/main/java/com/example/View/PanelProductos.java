@@ -4,16 +4,20 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
+import com.example.Model.Categoria;
+
 public class PanelProductos extends JPanel {
+
     private final JTextField txtId;
     private final JTextField txtNombre;
-    private final JTextField txtCategoria;
+    private final JComboBox<Categoria> cbCategoria;
     private final JTextField txtPrecio;
     private final JTextField txtStock;
     private final JButton btnRegistrar;
@@ -25,41 +29,42 @@ public class PanelProductos extends JPanel {
     public PanelProductos() {
         setLayout(new BorderLayout());
 
-        JPanel formulario=new JPanel(new GridLayout(5,2));
+        JPanel formulario = new JPanel(new GridLayout(5, 2));
 
         formulario.add(new JLabel("Código"));
-        txtId=new JTextField();
+        txtId = new JTextField();
+        txtId.setEditable(false);
         formulario.add(txtId);
 
         formulario.add(new JLabel("Nombre"));
-        txtNombre=new JTextField();
+        txtNombre = new JTextField();
         formulario.add(txtNombre);
 
         formulario.add(new JLabel("Categoría"));
-        txtCategoria=new JTextField();
-        formulario.add(txtCategoria);
+        cbCategoria = new JComboBox<>();
+        formulario.add(cbCategoria);
 
         formulario.add(new JLabel("Precio"));
-        txtPrecio=new JTextField();
+        txtPrecio = new JTextField();
         formulario.add(txtPrecio);
 
         formulario.add(new JLabel("Stock"));
-        txtStock=new JTextField();
+        txtStock = new JTextField();
         formulario.add(txtStock);
 
-        JPanel botones=new JPanel();
+        JPanel botones = new JPanel();
 
-        btnRegistrar=new JButton("Registrar");
-        btnEditar=new JButton("Editar");
-        btnEliminar=new JButton("Eliminar");
-        btnBuscar=new JButton("Buscar");
+        btnRegistrar = new JButton("Registrar");
+        btnEditar = new JButton("Editar");
+        btnEliminar = new JButton("Eliminar");
+        btnBuscar = new JButton("Buscar");
 
         botones.add(btnRegistrar);
         botones.add(btnEditar);
         botones.add(btnEliminar);
         botones.add(btnBuscar);
 
-        tabla=new JTable();
+        tabla = new JTable();
         add(formulario, BorderLayout.NORTH);
         add(new JScrollPane(tabla), BorderLayout.CENTER);
         add(botones, BorderLayout.SOUTH);
@@ -72,9 +77,9 @@ public class PanelProductos extends JPanel {
     public JTextField getTxtNombre() {
         return txtNombre;
     }
-    
-    public JTextField getTxtCategoria() {
-        return txtCategoria;
+
+    public JComboBox<Categoria> getCbCategoria() {
+        return cbCategoria;
     }
 
     public JTextField getTxtPrecio() {
@@ -104,5 +109,4 @@ public class PanelProductos extends JPanel {
     public JTable getTabla() {
         return tabla;
     }
-
 }

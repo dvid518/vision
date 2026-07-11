@@ -4,112 +4,134 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
+import com.toedter.calendar.JDateChooser;
+
 public class PanelPacientes extends JPanel {
+
+    private final JTextField txtIdPaciente;
     private final JTextField txtDni;
     private final JTextField txtNombre;
     private final JTextField txtApellidos;
-    private final JTextField txtSexo;
+    private final JComboBox<String> cbSexo;
     private final JTextField txtTelefono;
-    private final JTextField txtEdad;
+    private final JDateChooser chooserFechaNacimiento;
+
     private final JButton btnRegistrar;
     private final JButton btnEditar;
     private final JButton btnEliminar;
     private final JButton btnBuscar;
+
     private final JTable tabla;
 
     public PanelPacientes() {
         setLayout(new BorderLayout());
-        JPanel formulario=new JPanel(new GridLayout(6,2));
+
+        JPanel formulario = new JPanel(new GridLayout(7, 2));
+
+        formulario.add(new JLabel("ID Paciente"));
+        txtIdPaciente = new JTextField();
+        txtIdPaciente.setEditable(false);
+        formulario.add(txtIdPaciente);
 
         formulario.add(new JLabel("DNI"));
-        txtDni=new JTextField();
+        txtDni = new JTextField();
         formulario.add(txtDni);
 
         formulario.add(new JLabel("Nombre"));
-        txtNombre=new JTextField();
+        txtNombre = new JTextField();
         formulario.add(txtNombre);
 
         formulario.add(new JLabel("Apellidos"));
-        txtApellidos=new JTextField();
+        txtApellidos = new JTextField();
         formulario.add(txtApellidos);
 
         formulario.add(new JLabel("Sexo"));
-        txtSexo=new JTextField();
-        formulario.add(txtSexo);
+        cbSexo = new JComboBox<>();
+        cbSexo.addItem("-");
+        cbSexo.addItem("M");
+        cbSexo.addItem("F");
+        formulario.add(cbSexo);
 
         formulario.add(new JLabel("Teléfono"));
-        txtTelefono=new JTextField();
+        txtTelefono = new JTextField();
         formulario.add(txtTelefono);
 
-        formulario.add(new JLabel("Edad"));
-        txtEdad=new JTextField();
-        formulario.add(txtEdad);
+        formulario.add(new JLabel("Fecha Nacimiento"));
+        chooserFechaNacimiento = new JDateChooser();
+        chooserFechaNacimiento.setDateFormatString("yyyy-MM-dd");
+        formulario.add(chooserFechaNacimiento);
 
-        JPanel botones=new JPanel();
+        JPanel botones = new JPanel();
 
-        btnRegistrar=new JButton("Registrar");
-        btnEditar=new JButton("Editar");
-        btnEliminar=new JButton("Eliminar");
-        btnBuscar=new JButton("Buscar");
+        btnRegistrar = new JButton("Registrar");
+        btnEditar = new JButton("Editar");
+        btnEliminar = new JButton("Eliminar");
+        btnBuscar = new JButton("Buscar");
 
         botones.add(btnRegistrar);
         botones.add(btnEditar);
         botones.add(btnEliminar);
         botones.add(btnBuscar);
-        tabla=new JTable();
+
+        tabla = new JTable();
+
         add(formulario, BorderLayout.NORTH);
         add(new JScrollPane(tabla), BorderLayout.CENTER);
         add(botones, BorderLayout.SOUTH);
     }
 
+    public JTextField getTxtIdPaciente() {
+        return txtIdPaciente;
+    }
+
     public JTextField getTxtDni() {
         return txtDni;
     }
-    
+
     public JTextField getTxtNombre() {
         return txtNombre;
     }
-    
+
     public JTextField getTxtApellidos() {
         return txtApellidos;
     }
-    
-    public JTextField getTxtSexo() {
-        return txtSexo;
+
+    public JComboBox<String> getCbSexo() {
+        return cbSexo;
     }
-    
+
     public JTextField getTxtTelefono() {
         return txtTelefono;
     }
-    
-    public JTextField getTxtEdad() {
-        return txtEdad;
+
+    public JDateChooser getChooserFechaNacimiento() {
+        return chooserFechaNacimiento;
     }
-    
+
     public JButton getBtnRegistrar() {
         return btnRegistrar;
     }
-    
+
     public JButton getBtnEditar() {
         return btnEditar;
     }
-    
+
     public JButton getBtnEliminar() {
         return btnEliminar;
     }
-    
+
     public JButton getBtnBuscar() {
         return btnBuscar;
     }
-    
+
     public JTable getTabla() {
         return tabla;
     }
-    
 }

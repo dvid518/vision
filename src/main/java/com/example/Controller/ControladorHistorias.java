@@ -1,135 +1,207 @@
 package com.example.Controller;
 
-import java.util.ArrayList;
-
 import javax.swing.table.DefaultTableModel;
 
 import com.example.Model.Historia;
+import com.example.Model.Paciente;
+import com.example.Service.HistoriaService;
+import com.example.Service.PacienteService;
 import com.example.View.PanelHistorias;
 import com.example.View.VentanaPrincipal;
 import com.example.View.VistaConsola;
 
 public class ControladorHistorias {
+
+    private static final String CONTROLLER_NAME = "ControladorHistorias";
+    
     private final VentanaPrincipal vp;
     private final PanelHistorias ph;
-    private final ArrayList<Historia> historias;
+    private final HistoriaService hs;
+    private final PacienteService ps;
     private final VistaConsola vc;
-    private final String controlador="ControladorHistorias";
 
     public ControladorHistorias(VentanaPrincipal vp) {
-        this.ph=vp.getPanelHistorias();
         this.vp=vp;
-        historias=new ArrayList<>();
-        vc=new VistaConsola();
+        this.ph=vp.getPanelHistorias();
+        this.hs=new HistoriaService();
+        this.ps=new PacienteService();
+        this.vc=new VistaConsola();
     }
 
     public void start() {
         eventos();
         showHistorias();
-        vc.adminStart(controlador);
+        vc.adminStart(CONTROLLER_NAME);
     }
 
-    // eventos
     public void eventos() {
-        ph.getBtnRegistrar().addActionListener(e->createHistoria());
-        ph.getBtnEditar().addActionListener(e->editHistoria());
-        ph.getBtnEliminar().addActionListener(e->deleteHistoria());
-        ph.getBtnBuscar().addActionListener(e->searchHistoria());
+        ph.getBtnRegistrar().addActionListener(e -> createHistoria());
+        ph.getBtnEditar().addActionListener(e -> editHistoria());
+        ph.getBtnEliminar().addActionListener(e -> deleteHistoria());
+        ph.getBtnBuscar().addActionListener(e -> searchHistoria());
     }
 
-    // historias
     public void createHistoria() {
-        String dni=ph.getTxtDniPaciente().getText();
-        String antecedentes=ph.getTxtAntecedentes().getText();
-        String alergias=ph.getTxtAlergias().getText();
-        String graduacion=ph.getTxtGraduacion().getText();
-        String observaciones=ph.getTxtObservaciones().getText();
-        if (targetHistoria(dni)!=null) {
+        String dni=ph.getTxtDniPaciente().getText().trim();
+        if (dni.isEmpty()) {
+            vp.showError("Debe ingresar un DNI", CONTROLLER_NAME);
             return;
         }
-        Historia h=new Historia(dni, antecedentes, alergias, graduacion, observaciones);
-        historias.add(h);
+
+        // Verificar que el paciente existe
+        Paciente paciente=ps.searchPacienteDni(dni);
+        if (paciente==null) {
+            vp.showError("Paciente no encontrado con DNI: "+dni, CONTROLLER_NAME);
+            return;
+        }
+
+        // Verificar si ya tiene historia
+        if (hs.existeHistoria(paciente.getIdPaciente())) {
+            vp.showError("El paciente ya tiene una historia clínica", CONTROLLER_NAME);
+            return;
+        }
+
+        String antecedentes=ph.getTxtAntecedentes().getText().trim();
+        String alergias=ph.getTxtAlergias().getText().trim();
+        String graduacion=ph.getTxtGraduacion().getText().trim();
+        String observaciones=ph.getTxtObservaciones().getText().trim();
+
+        Historia h = new Historia(paciente, antecedentes, alergias, graduacion, observaciones);
+        
+        if (!hs.registerHistoria(h)) {
+            vp.showError("No se pudo registrar la historia clínica", CONTROLLER_NAME);
+            return;
+        }
+        
         showHistorias();
         clearHistoria();
-        vp.showExitoCreateModel(controlador);
+        vp.showExitoCreateModel(CONTROLLER_NAME);
         vc.printHistoria(h);
     }
 
     public void editHistoria() {
-        Historia h=targetHistoria(ph.getTxtDniPaciente().getText());
-        if (h==null) {
+        String dni=ph.getTxtDniPaciente().getText().trim();
+        if (dni.isEmpty()) {
+            vp.showError("Debe ingresar un DNI", CONTROLLER_NAME);
             return;
         }
-        h.setAntecedentes(ph.getTxtAntecedentes().getText());
-        h.setAlergias(ph.getTxtAlergias().getText());
-        h.setGraduacion(ph.getTxtGraduacion().getText());
-        h.setObservaciones(ph.getTxtObservaciones().getText());
+
+        Paciente paciente=ps.searchPacienteDni(dni);
+        if (paciente == null) {
+            vp.showError("Paciente no encontrado", CONTROLLER_NAME);
+            return;
+        }
+
+        Historia h=hs.searchHistoriaByPaciente(paciente.getIdPaciente());
+        if (h==null) {
+            vp.showErrorBusqueda(CONTROLLER_NAME);
+            return;
+        }
+
+        h.setAntecedentes(ph.getTxtAntecedentes().getText().trim());
+        h.setAlergias(ph.getTxtAlergias().getText().trim());
+        h.setGraduacion(ph.getTxtGraduacion().getText().trim());
+        h.setObservaciones(ph.getTxtObservaciones().getText().trim());
+
+        if (!hs.updateHistoria(h)) {
+            vp.showError("No se pudo actualizar la historia clínica", CONTROLLER_NAME);
+            return;
+        }
+
         showHistorias();
         clearHistoria();
-        vp.showExitoEditModel(controlador);
+        vp.showExitoEditModel(CONTROLLER_NAME);
         vc.printHistoria(h);
     }
 
     public void deleteHistoria() {
-        Historia h=targetHistoria(ph.getTxtDniPaciente().getText());
-        if (h==null) {
+        String dni=ph.getTxtDniPaciente().getText().trim();
+        if (dni.isEmpty()) {
+            vp.showError("Debe ingresar un DNI", CONTROLLER_NAME);
             return;
         }
-        historias.remove(h);
+
+        Paciente paciente=ps.searchPacienteDni(dni);
+        if (paciente==null) {
+            vp.showError("Paciente no encontrado", CONTROLLER_NAME);
+            return;
+        }
+
+        Historia h = hs.searchHistoriaByPaciente(paciente.getIdPaciente());
+        if (h==null) {
+            vp.showErrorBusqueda(CONTROLLER_NAME);
+            return;
+        }
+
+        if (!hs.deleteHistoria(h.getIdHistoria())) {
+            vp.showError("No se pudo eliminar la historia clínica", CONTROLLER_NAME);
+            return;
+        }
+
         showHistorias();
         clearHistoria();
-        vp.showExitoDeleteModel(controlador);
+        vp.showExitoDeleteModel(CONTROLLER_NAME);
     }
 
     public void searchHistoria() {
-        Historia h=targetHistoria(ph.getTxtDniPaciente().getText());
-        if (h==null) {
-            vp.showErrorBusqueda(controlador);
+        String dni=ph.getTxtDniPaciente().getText().trim();
+        if (dni.isEmpty()) {
+            vp.showError("Debe ingresar un DNI", CONTROLLER_NAME);
             return;
         }
+
+        Paciente paciente=ps.searchPacienteDni(dni);
+        if (paciente==null) {
+            vp.showError("Paciente no encontrado", CONTROLLER_NAME);
+            return;
+        }
+
+        Historia h=hs.searchHistoriaByPaciente(paciente.getIdPaciente());
+        if (h == null) {
+            vp.showErrorBusqueda(CONTROLLER_NAME);
+            return;
+        }
+
         ph.getTxtAntecedentes().setText(h.getAntecedentes());
         ph.getTxtAlergias().setText(h.getAlergias());
         ph.getTxtGraduacion().setText(h.getGraduacion());
         ph.getTxtObservaciones().setText(h.getObservaciones());
-        vp.showExitoBusqueda(controlador);
+        vp.showExitoBusqueda(CONTROLLER_NAME);
     }
 
-    // mostrar
     public void showHistorias() {
-        DefaultTableModel m=new DefaultTableModel();
-        m.addColumn("DNI");
-        m.addColumn("Antecedentes");
-        m.addColumn("Alergias");
-        m.addColumn("Graduación");
-        m.addColumn("Observaciones");
-        for (Historia h:historias) {
-            m.addRow(new Object[]{h.getDniPaciente(), h.getAntecedentes(), h.getAlergias(), h.getGraduacion(), h.getObservaciones()});
-        }
-        ph.getTabla().setModel(m);
-        vc.adminMsgTabla(controlador);
-    }
-
-    // búsqueda
-    public Historia targetHistoria(String dni) {
-        for (Historia h:historias) {
-            if (h.getDniPaciente().equals(dni)) {
-                return h;
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
             }
+        };
+        model.addColumn("ID");
+        model.addColumn("DNI Paciente");
+        model.addColumn("Antecedentes");
+        model.addColumn("Alergias");
+        model.addColumn("Graduación");
+        model.addColumn("Observaciones");
+
+        for (Historia h:hs.listHistorias()) {
+            model.addRow(new Object[]{
+                h.getIdHistoria(),
+                h.getPaciente().getDni(),
+                h.getAntecedentes(),
+                h.getAlergias(),
+                h.getGraduacion(),
+                h.getObservaciones()
+            });
         }
-        return null;
+        ph.getTabla().setModel(model);
+        vc.adminMsgTabla(CONTROLLER_NAME);
     }
 
-    // utilidades
     public void clearHistoria() {
         ph.getTxtDniPaciente().setText("");
         ph.getTxtAntecedentes().setText("");
         ph.getTxtAlergias().setText("");
         ph.getTxtGraduacion().setText("");
         ph.getTxtObservaciones().setText("");
-    }
-
-    public ArrayList<Historia> getHistorias() {
-        vc.adminGetArrayList(controlador);
-        return historias;
     }
 }

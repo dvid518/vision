@@ -1,20 +1,26 @@
 package com.example.Model;
 
 public class Consulta {
-    private String dniPaciente;
+    private final int idConsulta;
+    private Paciente paciente;
     private String motivo;
     private String diagnostico;
     private String tratamiento;
 
-    public Consulta(String dniPaciente, String motivo, String diagnostico, String tratamiento) {
-        this.dniPaciente=dniPaciente;
+    public Consulta(Paciente paciente, String motivo, String diagnostico, String tratamiento) {
+        this.idConsulta=0;
+        this.paciente=paciente;
         this.motivo=motivo;
         this.diagnostico=diagnostico;
         this.tratamiento=tratamiento;
     }
 
-    public String getDniPaciente() {
-        return dniPaciente;
+    public int getIdConsulta() {
+        return idConsulta;
+    }
+    
+    public Paciente getPaciente() {
+        return paciente;
     }
 
     public String getMotivo() {
@@ -28,9 +34,9 @@ public class Consulta {
     public String getTratamiento() {
         return tratamiento;
     }
-
-    public void setDniPaciente(String dniPaciente) {
-        this.dniPaciente=dniPaciente;
+    
+    public void setPaciente(Paciente paciente) {
+        this.paciente=paciente;
     }
 
     public void setMotivo(String motivo) {

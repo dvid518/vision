@@ -1,22 +1,27 @@
 package com.example.Model;
 
 public class Historia {
-    private String dniPaciente;
+    private int idHistoria;
+    private Paciente paciente;
     private String antecedentes;
     private String alergias;
     private String graduacion;
     private String observaciones;
 
-    public Historia(String dniPaciente, String antecedentes, String alergias, String graduacion, String observaciones) {
-        this.dniPaciente=dniPaciente;
+    public Historia(Paciente paciente, String antecedentes, String alergias, String graduacion, String observaciones) {
+        this.paciente=paciente;
         this.antecedentes=antecedentes;
         this.alergias=alergias;
         this.graduacion=graduacion;
         this.observaciones=observaciones;
     }
 
-    public String getDniPaciente() {
-        return dniPaciente;
+    public int getIdHistoria() {
+        return idHistoria;
+    }
+
+    public Paciente getPaciente() {
+        return paciente;
     }
 
     public String getAntecedentes() {
@@ -35,8 +40,12 @@ public class Historia {
         return observaciones;
     }
 
-    public void setDniPaciente(String dniPaciente) {
-        this.dniPaciente=dniPaciente;
+    public void setIdHistoria(int idHistoria) {
+        this.idHistoria=idHistoria;
+    }
+
+    public void setPaciente(Paciente paciente) {
+        this.paciente=paciente;
     }
 
     public void setAntecedentes(String antecedentes) {

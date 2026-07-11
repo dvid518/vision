@@ -1,20 +1,29 @@
 package com.example.Model;
 
+import java.time.LocalDate;
+
 public class Paciente {
+    private int idPaciente;
     private String dni;
     private String nombre;
     private String apellidos;
     private String sexo;
     private String telefono;
-    private int edad;
+    private LocalDate fechaNacimiento;
 
-    public Paciente(String dni, String nombre, String apellidos, String sexo, String telefono, int edad) {
+    public Paciente() {}
+
+    public Paciente(String dni, String nombre, String apellidos, String sexo, String telefono, LocalDate fechaNacimiento) {
         this.dni=dni;
         this.nombre=nombre;
         this.apellidos=apellidos;
         this.sexo=sexo;
         this.telefono=telefono;
-        this.edad=edad;
+        this.fechaNacimiento=fechaNacimiento;
+    }
+
+    public int getIdPaciente() {
+        return idPaciente;
     }
 
     public String getDni() {
@@ -37,15 +46,19 @@ public class Paciente {
         return telefono;
     }
 
-    public int getEdad() {
-        return edad;
+    public LocalDate getFechaNacimiento() {
+        return fechaNacimiento;
+    }
+
+    public void setIdPaciente(int idPaciente) {
+        this.idPaciente=idPaciente;
     }
 
     public void setDni(String dni) {
         this.dni=dni;
     }
 
-    public void setNombres(String nombre) {
+    public void setNombre(String nombre) {
         this.nombre=nombre;
     }
 
@@ -61,7 +74,7 @@ public class Paciente {
         this.telefono=telefono;
     }
 
-    public void setEdad(int edad) {
-        this.edad=edad;
+    public void setFechaNacimiento(LocalDate fechaNacimiento) {
+        this.fechaNacimiento=fechaNacimiento;
     }
 }

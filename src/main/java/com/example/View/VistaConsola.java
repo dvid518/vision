@@ -3,6 +3,8 @@ package com.example.View;
 import com.example.Model.Consulta;
 import com.example.Model.Historia;
 import com.example.Model.Paciente;
+import com.example.Model.Producto;
+import com.example.Model.Venta;
 
 public class VistaConsola {
     public void msg(String msg) {
@@ -26,6 +28,14 @@ public class VistaConsola {
         adminMsg("Consulta reestablecida correctamente", c);
     }
 
+    public void adminClearProducto(String c) {
+        adminMsg("Producto reestablecido correctamente", c);
+    }
+    
+    public void adminClearVenta(String c) {
+        adminMsg("Venta reestablecida correctamente", c);
+    }
+    
     public void adminStart(String c) {
         adminMsg("Cargados módulos del controlador", c);
     }
@@ -39,15 +49,16 @@ public class VistaConsola {
         adminErr("No se creó el objeto", c);
     }
     
+    // impresión de objetos
     public void printConsulta(Consulta c) {
-        msg("DNI: "+c.getDniPaciente());
+        msg("DNI: "+c.getPaciente().getDni());
         msg("Motivo: "+c.getMotivo());
         msg("Diagnóstico: "+c.getDiagnostico());
         msg("Tratamiento: "+c.getTratamiento());
     }
 
     public void printHistoria(Historia h) {
-        msg("DNI: "+h.getDniPaciente());
+        msg("DNI: "+h.getPaciente().getDni());
         msg("Antecedentes: "+h.getAntecedentes());
         msg("Alergias: "+h.getAlergias());
         msg("Graduación: "+h.getGraduacion());
@@ -60,5 +71,11 @@ public class VistaConsola {
         msg("Apellidos: "+p.getApellidos());
         msg("Sexo: "+p.getSexo());
         msg("Telefono: "+p.getTelefono());
+    }
+
+    public void printProducto(Producto p) {
+    }
+
+    public void printVenta(Venta v) {
     }
 }

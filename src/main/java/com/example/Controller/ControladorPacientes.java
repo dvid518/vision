@@ -1,191 +1,282 @@
 package com.example.Controller;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 
 import javax.swing.table.DefaultTableModel;
 
 import com.example.Model.Paciente;
+import com.example.Service.PacienteService;
 import com.example.View.PanelPacientes;
 import com.example.View.VentanaPrincipal;
 import com.example.View.VistaConsola;
 
 public class ControladorPacientes {
-    private final VentanaPrincipal vp;
-    private final PanelPacientes pp;
-    private final ArrayList<Paciente> pacientes;
-    private final VistaConsola vc;
-    private final String controlador="ControladorPacientes";
 
-    public ControladorPacientes(VentanaPrincipal vp) {
-        this.pp=vp.getPanelPacientes();
-        this.vp=vp;
-        pacientes=new ArrayList<>();
-        vc=new VistaConsola();
+    private static final String CONTROLLER_NAME = "ControladorPacientes";
+    
+    private final VentanaPrincipal ventanaPrincipal;
+    private final PanelPacientes panelPacientes;
+    private final PacienteService pacienteService;
+    private final VistaConsola vistaConsola;
+
+    public ControladorPacientes(VentanaPrincipal ventanaPrincipal) {
+        this.ventanaPrincipal = ventanaPrincipal;
+        this.panelPacientes = ventanaPrincipal.getPanelPacientes();
+        this.pacienteService = new PacienteService();
+        this.vistaConsola = new VistaConsola();
     }
 
     public void start() {
         eventos();
         showPacientes();
-        vc.adminStart(controlador);
+        vistaConsola.adminStart(CONTROLLER_NAME);
     }
 
-    // eventos
     public void eventos() {
-        pp.getBtnRegistrar().addActionListener(e->createPaciente());
-        pp.getBtnEditar().addActionListener(e->editPaciente());
-        pp.getBtnEliminar().addActionListener(e->deletePaciente());
-        pp.getBtnBuscar().addActionListener(e->searchPaciente());
+        panelPacientes.getBtnRegistrar().addActionListener(e -> createPaciente());
+        panelPacientes.getBtnEditar().addActionListener(e -> editPaciente());
+        panelPacientes.getBtnEliminar().addActionListener(e -> deletePaciente());
+        panelPacientes.getBtnBuscar().addActionListener(e -> searchPaciente());
     }
 
-    // pacientes
     public void createPaciente() {
-        String dni=pp.getTxtDni().getText();
-        String nombre=pp.getTxtNombre().getText();
-        String apellidos=pp.getTxtApellidos().getText();
-        String sexo=pp.getTxtSexo().getText();
-        String telefono=pp.getTxtTelefono().getText();
-        int edad;
-        try {
-            edad=Integer.parseInt(pp.getTxtEdad().getText());
-        } catch (NumberFormatException e) {
+        String dni = panelPacientes.getTxtDni().getText().trim();
+        if (dni.isEmpty()) {
+            ventanaPrincipal.showError("El DNI es obligatorio", CONTROLLER_NAME);
             return;
         }
-        if (!validatePaciente(dni, sexo, telefono, edad)) {
+
+        // Validar DNI (8 dígitos)
+        if (!dni.matches("\\d{8}")) {
+            ventanaPrincipal.showError("DNI inválido. Debe tener 8 dígitos", CONTROLLER_NAME);
             return;
         }
-        Paciente p=new Paciente(dni, nombre, apellidos, sexo, telefono, edad);
-        pacientes.add(p);
+
+        // Verificar si el DNI ya existe
+        if (pacienteService.searchPacienteDni(dni) != null) {
+            ventanaPrincipal.showError("Ya existe un paciente con ese DNI", CONTROLLER_NAME);
+            return;
+        }
+
+        String nombre = panelPacientes.getTxtNombre().getText().trim();
+        if (nombre.isEmpty()) {
+            ventanaPrincipal.showError("El nombre es obligatorio", CONTROLLER_NAME);
+            return;
+        }
+
+        String apellidos = panelPacientes.getTxtApellidos().getText().trim();
+        if (apellidos.isEmpty()) {
+            ventanaPrincipal.showError("Los apellidos son obligatorios", CONTROLLER_NAME);
+            return;
+        }
+
+        String sexo = (String) panelPacientes.getCbSexo().getSelectedItem();
+        if (sexo == null || sexo.isEmpty()) {
+            ventanaPrincipal.showError("Debe seleccionar un sexo", CONTROLLER_NAME);
+            return;
+        }
+
+        String telefono = panelPacientes.getTxtTelefono().getText().trim();
+        if (telefono.isEmpty()) {
+            ventanaPrincipal.showError("El teléfono es obligatorio", CONTROLLER_NAME);
+            return;
+        }
+
+        // Validar teléfono (9 dígitos)
+        if (!telefono.matches("\\d{9}")) {
+            ventanaPrincipal.showError("Teléfono inválido. Debe tener 9 dígitos", CONTROLLER_NAME);
+            return;
+        }
+
+        LocalDate fechaNacimiento;
+        Date date = panelPacientes.getChooserFechaNacimiento().getDate();
+        if (date == null) {
+            ventanaPrincipal.showError("Debe seleccionar una fecha de nacimiento", CONTROLLER_NAME);
+            return;
+        }
+        fechaNacimiento = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        Paciente p = new Paciente(dni, nombre, apellidos, sexo, telefono, fechaNacimiento);
+        
+        if (!pacienteService.registerPaciente(p)) {
+            ventanaPrincipal.showError("No se pudo registrar el paciente", CONTROLLER_NAME);
+            return;
+        }
+        
         showPacientes();
         clearPaciente();
-        vp.showExitoCreateModel(controlador);
-        vc.printPaciente(p);
+        ventanaPrincipal.showExitoCreateModel(CONTROLLER_NAME);
+        vistaConsola.printPaciente(p);
     }
 
     public void editPaciente() {
-        Paciente p=targetPaciente(pp.getTxtDni().getText());
-        if (p==null) {
+        int filaSeleccionada = panelPacientes.getTabla().getSelectedRow();
+        if (filaSeleccionada == -1) {
+            ventanaPrincipal.showError("Seleccione un paciente de la tabla para editar", CONTROLLER_NAME);
             return;
         }
-        p.setNombres(pp.getTxtNombre().getText());
-        p.setTelefono(pp.getTxtTelefono().getText());
-        try {
-            p.setEdad(Integer.parseInt(pp.getTxtEdad().getText()));
-        } catch (NumberFormatException e) {
+
+        int idPaciente = (int) panelPacientes.getTabla().getValueAt(filaSeleccionada, 0);
+        Paciente p = pacienteService.searchPacienteId(idPaciente);
+        if (p == null) {
+            ventanaPrincipal.showErrorBusqueda(CONTROLLER_NAME);
             return;
         }
+
+        String dni = panelPacientes.getTxtDni().getText().trim();
+        if (dni.isEmpty()) {
+            ventanaPrincipal.showError("El DNI es obligatorio", CONTROLLER_NAME);
+            return;
+        }
+
+        if (!dni.matches("\\d{8}")) {
+            ventanaPrincipal.showError("DNI inválido. Debe tener 8 dígitos", CONTROLLER_NAME);
+            return;
+        }
+
+        // Verificar si el DNI ya existe en otro paciente
+        Paciente existente = pacienteService.searchPacienteDni(dni);
+        if (existente != null && existente.getIdPaciente() != idPaciente) {
+            ventanaPrincipal.showError("Ya existe otro paciente con ese DNI", CONTROLLER_NAME);
+            return;
+        }
+
+        String nombre = panelPacientes.getTxtNombre().getText().trim();
+        if (nombre.isEmpty()) {
+            ventanaPrincipal.showError("El nombre es obligatorio", CONTROLLER_NAME);
+            return;
+        }
+
+        String apellidos = panelPacientes.getTxtApellidos().getText().trim();
+        if (apellidos.isEmpty()) {
+            ventanaPrincipal.showError("Los apellidos son obligatorios", CONTROLLER_NAME);
+            return;
+        }
+
+        String sexo = (String) panelPacientes.getCbSexo().getSelectedItem();
+        if (sexo == null || sexo.isEmpty() || sexo.equals("-")) {
+            ventanaPrincipal.showError("Debe seleccionar un sexo", CONTROLLER_NAME);
+            return;
+        }
+
+        String telefono = panelPacientes.getTxtTelefono().getText().trim();
+        if (telefono.isEmpty()) {
+            ventanaPrincipal.showError("El teléfono es obligatorio", CONTROLLER_NAME);
+            return;
+        }
+
+        if (!telefono.matches("\\d{9}")) {
+            ventanaPrincipal.showError("Teléfono inválido. Debe tener 9 dígitos", CONTROLLER_NAME);
+            return;
+        }
+
+        LocalDate fechaNacimiento;
+        Date date = panelPacientes.getChooserFechaNacimiento().getDate();
+        if (date == null) {
+            ventanaPrincipal.showError("Debe seleccionar una fecha de nacimiento", CONTROLLER_NAME);
+            return;
+        }
+        fechaNacimiento = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        p.setDni(dni);
+        p.setNombre(nombre);
+        p.setApellidos(apellidos);
+        p.setSexo(sexo);
+        p.setTelefono(telefono);
+        p.setFechaNacimiento(fechaNacimiento);
+
+        if (!pacienteService.updatePaciente(p)) {
+            ventanaPrincipal.showError("No se pudo actualizar el paciente", CONTROLLER_NAME);
+            return;
+        }
+
         showPacientes();
         clearPaciente();
-        vp.showExitoEditModel(controlador);
-        vc.printPaciente(p);
+        ventanaPrincipal.showExitoEditModel(CONTROLLER_NAME);
+        vistaConsola.printPaciente(p);
     }
 
     public void deletePaciente() {
-        Paciente p=targetPaciente(pp.getTxtDni().getText());
-        if (p==null) {
+        int filaSeleccionada = panelPacientes.getTabla().getSelectedRow();
+        if (filaSeleccionada == -1) {
+            ventanaPrincipal.showError("Seleccione un paciente de la tabla para eliminar", CONTROLLER_NAME);
             return;
         }
-        pacientes.remove(p);
+
+        int idPaciente = (int) panelPacientes.getTabla().getValueAt(filaSeleccionada, 0);
+        
+        if (!pacienteService.deletePaciente(idPaciente)) {
+            ventanaPrincipal.showError("No se pudo eliminar el paciente", CONTROLLER_NAME);
+            return;
+        }
+
         showPacientes();
         clearPaciente();
-        vp.showExitoDeleteModel(controlador);
+        ventanaPrincipal.showExitoDeleteModel(CONTROLLER_NAME);
     }
 
     public void searchPaciente() {
-        Paciente p=targetPaciente(pp.getTxtDni().getText());
-        if (p==null) {
-            vp.showErrorBusqueda(controlador);
+        String dni = panelPacientes.getTxtDni().getText().trim();
+        if (dni.isEmpty()) {
+            ventanaPrincipal.showError("Debe ingresar un DNI para buscar", CONTROLLER_NAME);
             return;
         }
-        pp.getTxtNombre().setText(p.getNombre());
-        pp.getTxtApellidos().setText(p.getApellidos());
-        pp.getTxtSexo().setText(p.getSexo());
-        pp.getTxtTelefono().setText(p.getTelefono());
-        pp.getTxtEdad().setText(String.valueOf(p.getEdad()));
-        vp.showExitoBusqueda(controlador);
+
+        Paciente p = pacienteService.searchPacienteDni(dni);
+        if (p == null) {
+            ventanaPrincipal.showErrorBusqueda(CONTROLLER_NAME);
+            return;
+        }
+
+        panelPacientes.getTxtIdPaciente().setText(String.valueOf(p.getIdPaciente()));
+        panelPacientes.getTxtDni().setText(p.getDni());
+        panelPacientes.getTxtNombre().setText(p.getNombre());
+        panelPacientes.getTxtApellidos().setText(p.getApellidos());
+        panelPacientes.getCbSexo().setSelectedItem(p.getSexo());
+        panelPacientes.getTxtTelefono().setText(p.getTelefono());
+        panelPacientes.getChooserFechaNacimiento().setDate(java.sql.Date.valueOf(p.getFechaNacimiento()));
+        ventanaPrincipal.showExitoBusqueda(CONTROLLER_NAME);
     }
 
-    // mostrar
     public void showPacientes() {
-        DefaultTableModel m=new DefaultTableModel();
-        m.addColumn("DNI");
-        m.addColumn("Nombre");
-        m.addColumn("Apellidos");
-        m.addColumn("Sexo");
-        m.addColumn("Teléfono");
-        m.addColumn("Edad");
-        for (Paciente p:pacientes) {
-            m.addRow(new Object[]{p.getDni(), p.getNombre(), p.getApellidos(), p.getSexo(), p.getTelefono(), p.getEdad()});
-        }
-        pp.getTabla().setModel(m);
-    }
-
-    // búsqueda
-    public Paciente targetPaciente(String dni) {
-        for (Paciente p:pacientes) {
-            if (p.getDni().equals(dni)) {
-                return p;
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
             }
+        };
+        model.addColumn("ID");
+        model.addColumn("DNI");
+        model.addColumn("Nombre");
+        model.addColumn("Apellidos");
+        model.addColumn("Sexo");
+        model.addColumn("Teléfono");
+        model.addColumn("Fecha Nacimiento");
+
+        for (Paciente p : pacienteService.listPacientes()) {
+            model.addRow(new Object[]{
+                p.getIdPaciente(),
+                p.getDni(),
+                p.getNombre(),
+                p.getApellidos(),
+                p.getSexo(),
+                p.getTelefono(),
+                p.getFechaNacimiento()
+            });
         }
-        return null;
+        panelPacientes.getTabla().setModel(model);
+        vistaConsola.adminMsgTabla(CONTROLLER_NAME);
     }
 
-    // validaciones
-    public boolean validatePaciente(String dni, String sexo, String telefono, int edad) {
-        boolean val=true;
-        if (!validateDni(dni)) {
-            vp.showError("El DNI no es correcto (8 dígitos)", controlador);
-            val=false;
-        }
-        if (targetPaciente(dni)!=null) {
-            vp.showError("Ya existe un paciente con ese dni", controlador);
-            val=false;
-        }
-        if (!validateSexo(sexo)) {
-            vp.showError("El sexo no es correcto (M/F)", controlador);
-            val=false;
-        }
-        if (!validateTelefono(telefono)) {
-            vp.showError("El teléfono no es correcto (9 dígitos)", controlador);
-            val=false;
-        }
-        if (!validateEdad(edad)) {
-            vp.showError("La edad no es correcta (Sólo números positivos)", controlador);
-            val=false;
-        }
-        vc.errorValidateModel(controlador);
-        return val;
-    }
-
-    // validaciones
-    public boolean validateDni(String dni) {
-        return dni.length()==8;
-    }
-    
-    public boolean validateSexo(String sexo) {
-        boolean s=sexo.equalsIgnoreCase("m")||sexo.equalsIgnoreCase("f");
-        return sexo.length()==1&&s;
-    }
-
-    public boolean validateTelefono(String telefono) {
-        return telefono.length()>=9;
-    }
-
-    public boolean validateEdad(int edad) {
-        return edad>0;
-    }
-
-    // utilidades
     public void clearPaciente() {
-        pp.getTxtDni().setText("");
-        pp.getTxtNombre().setText("");
-        pp.getTxtApellidos().setText("");
-        pp.getTxtSexo().setText("");
-        pp.getTxtTelefono().setText("");
-        pp.getTxtEdad().setText("");
-    }
-
-    public ArrayList<Paciente> getPacientes() {
-        vc.adminGetArrayList(controlador);
-        return pacientes;
+        panelPacientes.getTxtIdPaciente().setText("");
+        panelPacientes.getTxtDni().setText("");
+        panelPacientes.getTxtNombre().setText("");
+        panelPacientes.getTxtApellidos().setText("");
+        panelPacientes.getCbSexo().setSelectedIndex(0);
+        panelPacientes.getTxtTelefono().setText("");
+        panelPacientes.getChooserFechaNacimiento().setDate(null);
     }
 }

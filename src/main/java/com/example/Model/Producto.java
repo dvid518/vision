@@ -1,29 +1,28 @@
 package com.example.Model;
 
 public class Producto {
-    private String id;
+    private int idProducto;
     private String nombre;
-    private String categoria;
+    private Categoria categoria;
     private double precio;
     private int stock;
 
-    public Producto(String id, String nombre, String categoria, double precio, int stock) {
-        this.id=id;
+    public Producto(String nombre, Categoria categoria, double precio, int stock) {
         this.nombre=nombre;
         this.categoria=categoria;
         this.precio=precio;
         this.stock=stock;
     }
 
-    public String getId() {
-        return id;
+    public int getIdProducto() {
+        return idProducto;
     }
 
     public String getNombre() {
         return nombre;
     }
 
-    public String getCategoria() {
+    public Categoria getCategoria() {
         return categoria;
     }
 
@@ -35,15 +34,15 @@ public class Producto {
         return stock;
     }
 
-    public void setId(String id) {
-        this.id=id;
+    public void setId(int idProducto) {
+        this.idProducto=idProducto;
     }
-
+    
     public void setNombre(String nombre) {
         this.nombre=nombre;
     }
 
-    public void setCategoria(String categoria) {
+    public void setCategoria(Categoria categoria) {
         this.categoria=categoria;
     }
 

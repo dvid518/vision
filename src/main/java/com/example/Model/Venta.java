@@ -1,34 +1,40 @@
 package com.example.Model;
 
 public class Venta {
-    private String dniPaciente;
-    private String codigoProducto;
+    private final int idVenta;
+    private Paciente paciente;
+    private Producto producto;
     private int cantidad;
 
-    public Venta(String dniPaciente, String codigoProducto, int cantidad) {
-        this.dniPaciente=dniPaciente;
-        this.codigoProducto=codigoProducto;
+    public Venta(Paciente paciente, Producto producto, int cantidad) {
+        this.idVenta=0;
+        this.paciente=paciente;
+        this.producto=producto;
         this.cantidad=cantidad;
     }
 
-    public String getDniPaciente() {
-        return dniPaciente;
+    public int getIdVenta() {
+        return idVenta;
     }
 
-    public String getCodigoProducto() {
-        return codigoProducto;
+    public Paciente getPaciente() {
+        return paciente;
+    }
+
+    public Producto getProducto() {
+        return producto;
     }
 
     public int getCantidad() {
         return cantidad;
     }
 
-    public void setDniPaciente(String dniPaciente) {
-        this.dniPaciente=dniPaciente;
+    public void setIdPaciente(Paciente paciente) {
+        this.paciente=paciente;
     }
 
-    public void setCodigoProducto(String codigoProducto) {
-        this.codigoProducto=codigoProducto;
+    public void setProducto(Producto producto) {
+        this.producto=producto;
     }
 
     public void setCantidad(int cantidad) {

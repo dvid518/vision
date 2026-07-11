@@ -88,7 +88,7 @@ public class VentanaPrincipal extends JFrame {
     
     public void showExito(String msg, String c) {
         vc.adminMsg(msg, c);
-        lblEstado.setForeground(Color.GREEN);
+        lblEstado.setForeground(Color.decode("#0d8200"));
         msg(msg);
     }
 
@@ -118,6 +118,14 @@ public class VentanaPrincipal extends JFrame {
     // métodos de mensajes predeterminados de error
     public void showErrorBusqueda(String c) {
         showError("Objeto no encontrado", c);
+    }
+
+    public void showErrorDato(String c, String dato) {
+        showError(dato+" inválido", c);
+    }
+
+    public void showErrorFecha(String c) {
+        showError("Fecha inválida", c);
     }
     
     public PanelPacientes getPanelPacientes() {
