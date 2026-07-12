@@ -10,9 +10,11 @@ public class Controlador {
     private final ControladorProductos cpr;
     private final ControladorVentas cv;
     private final ControladorCola ccl;
+    private final VentanaPrincipal v;
     private final VistaConsola vc;
 
     public Controlador(VentanaPrincipal v) {
+        this.v=v;
         cp=new ControladorPacientes(v);
         cc=new ControladorConsultas(v);
         ch=new ControladorHistorias(v);
@@ -30,5 +32,6 @@ public class Controlador {
         cpr.start();
         cv.start();
         ccl.start();
+        v.showExito("Todos los módulos cargados", "CONTROLADOR");
     }
 }

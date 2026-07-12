@@ -5,8 +5,43 @@ import java.util.List;
 import com.example.DAO.PacienteDAO;
 import com.example.Model.Paciente;
 
-public class PacienteService {
+public final class PacienteService {
+
     private final PacienteDAO pacDAO = new PacienteDAO();
+    private final BuscadorPacientes buscador = new BuscadorPacientes();
+
+    public PacienteService() {
+        recargarDatos();
+    }
+
+    public void recargarDatos() {
+        List<Paciente> pacientes = pacDAO.list();
+        buscador.cargarDatos(pacientes);
+    }
+
+    public Paciente buscarPorIdOptimizado(int id) {
+        return buscador.buscarPorId(id);
+    }
+
+    public Paciente buscarPorDniOptimizado(String dni) {
+        return buscador.buscarPorDni(dni);
+    }
+
+    public List<Paciente> buscarPorNombreOptimizado(String nombre) {
+        return buscador.buscar(nombre, BuscadorPacientes.TipoBusqueda.POR_NOMBRE);
+    }
+
+    public List<Paciente> buscarPorApellidoOptimizado(String apellido) {
+        return buscador.buscar(apellido, BuscadorPacientes.TipoBusqueda.POR_APELLIDO);
+    }
+
+    public List<Paciente> buscarPorPrefijoNombre(String prefijo) {
+        return buscador.buscarPorPrefijoNombre(prefijo);
+    }
+
+    public List<Paciente> buscarPorPrefijoApellido(String prefijo) {
+        return buscador.buscarPorPrefijoApellido(prefijo);
+    }
 
     private boolean isValidDatos(Paciente p) {
         if (p == null) {
@@ -34,12 +69,16 @@ public class PacienteService {
             return false;
         }
         if (!isValidDatos(p)) {
-            return true;
+            return false;
         }
         if (pacDAO.searchDni(p.getDni()) != null) {
             return false;
         }
-        return pacDAO.insert(p);
+        boolean resultado = pacDAO.insert(p);
+        if (resultado) {
+            recargarDatos();
+        }
+        return resultado;
     }
 
     public Paciente searchPacienteId(int id) {
@@ -68,16 +107,24 @@ public class PacienteService {
             return false;
         }
         if (!isValidDatos(p)) {
-            return true;
+            return false;
         }
-        return pacDAO.update(p);
+        boolean resultado = pacDAO.update(p);
+        if (resultado) {
+            recargarDatos();
+        }
+        return resultado;
     }
 
     public boolean deletePaciente(int id) {
         if (id <= 0) {
             return false;
         }
-        return pacDAO.delete(id);
+        boolean resultado = pacDAO.delete(id);
+        if (resultado) {
+            recargarDatos();
+        }
+        return resultado;
     }
 
     public List<Paciente> buscarPorNombreOApellido(String texto) {

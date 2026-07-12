@@ -35,10 +35,6 @@ public class VistaConsola {
     public void adminClearVenta(String c) {
         adminMsg("Venta reestablecida correctamente", c);
     }
-    
-    public void adminStart(String c) {
-        adminMsg("Cargados módulos del controlador", c);
-    }
 
     public void adminGetArrayList(String c) {
         adminMsg("Se obtuvo el arreglo de objetos", c);

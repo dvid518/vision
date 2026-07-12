@@ -77,7 +77,7 @@ public class VentanaPrincipal extends JFrame {
         lblEstado.setOpaque(false);
         lblEstado.setVisible(false);
         lblEstado.setBackground(Color.WHITE);
-        lblEstado.setBounds(850, 620, 300, 30);
+        lblEstado.setBounds(850, 580, 300, 30);
         getLayeredPane().add(lblEstado, JLayeredPane.POPUP_LAYER);
         setLayout(new BorderLayout());
         add(menu, BorderLayout.NORTH);
@@ -89,11 +89,11 @@ public class VentanaPrincipal extends JFrame {
         lblEstado.setText(msg);
         lblEstado.setVisible(true);
         lblEstado.setOpaque(true);
-        cleanLuego();
+        cleanLuego(3000);
     }
 
-    public void cleanLuego() {
-        Timer t = new Timer(5000, e -> {
+    public void cleanLuego(int sec) {
+        Timer t = new Timer(sec, e -> {
             lblEstado.setText("");
             lblEstado.setOpaque(false);
         });
@@ -113,7 +113,17 @@ public class VentanaPrincipal extends JFrame {
         msg(msg);
     }
 
+    public void showAdv(String msg, String c) {
+        vc.adminMsg(msg, c);
+        lblEstado.setForeground(Color.decode("#f1b467"));
+        msg(msg);
+    }
+
     // métodos de mensajes predeterminados de éxito
+    public void showAdminStart(String c) {
+        showAdv("Cargando módulos del controlador...", c);
+    }
+    
     public void showExitoBusqueda(String c) {
         showExito("Objeto encontrado correctamente", c);
     }

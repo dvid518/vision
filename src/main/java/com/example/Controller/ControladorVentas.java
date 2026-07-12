@@ -38,7 +38,7 @@ public class ControladorVentas {
         cargarPacientes();
         cargarProductos();
         showVentas();
-        vistaConsola.adminStart(CONTROLLER_NAME);
+        ventanaPrincipal.showAdminStart(CONTROLLER_NAME);
     }
 
     public void eventos() {
@@ -249,7 +249,6 @@ public class ControladorVentas {
             });
         }
         panelVentas.getTabla().setModel(model);
-        vistaConsola.adminMsgTabla(CONTROLLER_NAME);
     }
 
     public void clearVenta() {

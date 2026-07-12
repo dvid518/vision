@@ -33,7 +33,7 @@ public class ControladorProductos {
         eventos();
         cargarCategorias();
         showProductos();
-        vistaConsola.adminStart(CONTROLLER_NAME);
+        ventanaPrincipal.showAdminStart(CONTROLLER_NAME);
     }
 
     public void eventos() {
@@ -241,7 +241,6 @@ public class ControladorProductos {
             });
         }
         panelProductos.getTabla().setModel(model);
-        vistaConsola.adminMsgTabla(CONTROLLER_NAME);
     }
 
     public void clearProducto() {

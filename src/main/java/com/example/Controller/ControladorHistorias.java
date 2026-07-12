@@ -31,7 +31,7 @@ public class ControladorHistorias {
     public void start() {
         eventos();
         showHistorias();
-        vc.adminStart(CONTROLLER_NAME);
+        vp.showAdminStart(CONTROLLER_NAME);
     }
 
     public void eventos() {
@@ -194,7 +194,6 @@ public class ControladorHistorias {
             });
         }
         ph.getTabla().setModel(model);
-        vc.adminMsgTabla(CONTROLLER_NAME);
     }
 
     public void clearHistoria() {

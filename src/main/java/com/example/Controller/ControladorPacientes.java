@@ -15,7 +15,7 @@ import com.example.View.VistaConsola;
 public class ControladorPacientes {
 
     private static final String CONTROLLER_NAME = "ControladorPacientes";
-    
+
     private final VentanaPrincipal ventanaPrincipal;
     private final PanelPacientes panelPacientes;
     private final PacienteService pacienteService;
@@ -31,7 +31,7 @@ public class ControladorPacientes {
     public void start() {
         eventos();
         showPacientes();
-        vistaConsola.adminStart(CONTROLLER_NAME);
+        ventanaPrincipal.showAdminStart(CONTROLLER_NAME);
     }
 
     public void eventos() {
@@ -48,13 +48,11 @@ public class ControladorPacientes {
             return;
         }
 
-        // Validar DNI (8 dígitos)
         if (!dni.matches("\\d{8}")) {
             ventanaPrincipal.showError("DNI inválido. Debe tener 8 dígitos", CONTROLLER_NAME);
             return;
         }
 
-        // Verificar si el DNI ya existe
         if (pacienteService.searchPacienteDni(dni) != null) {
             ventanaPrincipal.showError("Ya existe un paciente con ese DNI", CONTROLLER_NAME);
             return;
@@ -84,7 +82,6 @@ public class ControladorPacientes {
             return;
         }
 
-        // Validar teléfono (9 dígitos)
         if (!telefono.matches("\\d{9}")) {
             ventanaPrincipal.showError("Teléfono inválido. Debe tener 9 dígitos", CONTROLLER_NAME);
             return;
@@ -99,12 +96,12 @@ public class ControladorPacientes {
         fechaNacimiento = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
         Paciente p = new Paciente(dni, nombre, apellidos, sexo, telefono, fechaNacimiento);
-        
+
         if (!pacienteService.registerPaciente(p)) {
             ventanaPrincipal.showError("No se pudo registrar el paciente", CONTROLLER_NAME);
             return;
         }
-        
+
         showPacientes();
         clearPaciente();
         ventanaPrincipal.showExitoCreateModel(CONTROLLER_NAME);
@@ -136,7 +133,6 @@ public class ControladorPacientes {
             return;
         }
 
-        // Verificar si el DNI ya existe en otro paciente
         Paciente existente = pacienteService.searchPacienteDni(dni);
         if (existente != null && existente.getIdPaciente() != idPaciente) {
             ventanaPrincipal.showError("Ya existe otro paciente con ese DNI", CONTROLLER_NAME);
@@ -206,7 +202,7 @@ public class ControladorPacientes {
         }
 
         int idPaciente = (int) panelPacientes.getTabla().getValueAt(filaSeleccionada, 0);
-        
+
         if (!pacienteService.deletePaciente(idPaciente)) {
             ventanaPrincipal.showError("No se pudo eliminar el paciente", CONTROLLER_NAME);
             return;
@@ -224,7 +220,8 @@ public class ControladorPacientes {
             return;
         }
 
-        Paciente p = pacienteService.searchPacienteDni(dni);
+        Paciente p = pacienteService.buscarPorDniOptimizado(dni);
+
         if (p == null) {
             ventanaPrincipal.showErrorBusqueda(CONTROLLER_NAME);
             return;
@@ -267,7 +264,6 @@ public class ControladorPacientes {
             });
         }
         panelPacientes.getTabla().setModel(model);
-        vistaConsola.adminMsgTabla(CONTROLLER_NAME);
     }
 
     public void clearPaciente() {

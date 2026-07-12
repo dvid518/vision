@@ -31,7 +31,7 @@ public class ControladorConsultas {
     public void start() {
         eventos();
         showConsultas();
-        vistaConsola.adminStart(CONTROLLER_NAME);
+        ventanaPrincipal.showAdminStart(CONTROLLER_NAME);
     }
 
     public void eventos() {
@@ -231,7 +231,6 @@ public class ControladorConsultas {
             });
         }
         panelConsultas.getTabla().setModel(model);
-        vistaConsola.adminMsgTabla(CONTROLLER_NAME);
     }
 
     public void clearConsulta() {

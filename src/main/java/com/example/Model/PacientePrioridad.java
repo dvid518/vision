@@ -3,7 +3,7 @@ package com.example.Model;
 public class PacientePrioridad extends Paciente implements Comparable<PacientePrioridad> {
     
     public enum Prioridad {
-        URGENTE(1), NORMAL(2);
+        NORMAL(2), URGENTE(1);
         
         private final int valor;
         
