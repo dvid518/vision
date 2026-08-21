@@ -47,46 +47,46 @@ public class ControladorPacientes {
             ventanaPrincipal.showError("El DNI es obligatorio", CONTROLLER_NAME);
             return;
         }
-
+    
         if (!dni.matches("\\d{8}")) {
             ventanaPrincipal.showError("DNI inválido. Debe tener 8 dígitos", CONTROLLER_NAME);
             return;
         }
-
+    
         if (pacienteService.searchPacienteDni(dni) != null) {
             ventanaPrincipal.showError("Ya existe un paciente con ese DNI", CONTROLLER_NAME);
             return;
         }
-
+    
         String nombre = panelPacientes.getTxtNombre().getText().trim();
         if (nombre.isEmpty()) {
             ventanaPrincipal.showError("El nombre es obligatorio", CONTROLLER_NAME);
             return;
         }
-
+    
         String apellidos = panelPacientes.getTxtApellidos().getText().trim();
         if (apellidos.isEmpty()) {
             ventanaPrincipal.showError("Los apellidos son obligatorios", CONTROLLER_NAME);
             return;
         }
-
+    
         String sexo = (String) panelPacientes.getCbSexo().getSelectedItem();
         if (sexo == null || sexo.isEmpty()) {
             ventanaPrincipal.showError("Debe seleccionar un sexo", CONTROLLER_NAME);
             return;
         }
-
+    
         String telefono = panelPacientes.getTxtTelefono().getText().trim();
         if (telefono.isEmpty()) {
             ventanaPrincipal.showError("El teléfono es obligatorio", CONTROLLER_NAME);
             return;
         }
-
+    
         if (!telefono.matches("\\d{9}")) {
             ventanaPrincipal.showError("Teléfono inválido. Debe tener 9 dígitos", CONTROLLER_NAME);
             return;
         }
-
+    
         LocalDate fechaNacimiento;
         Date date = panelPacientes.getChooserFechaNacimiento().getDate();
         if (date == null) {
@@ -94,14 +94,20 @@ public class ControladorPacientes {
             return;
         }
         fechaNacimiento = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
-        Paciente p = new Paciente(dni, nombre, apellidos, sexo, telefono, fechaNacimiento);
-
+        
+        Paciente p = new Paciente();
+        p.setDni(dni);
+        p.setNombre(nombre);
+        p.setApellidos(apellidos);
+        p.setSexo(sexo);
+        p.setTelefono(telefono);
+        p.setFechaNacimiento(fechaNacimiento);
+    
         if (!pacienteService.registerPaciente(p)) {
             ventanaPrincipal.showError("No se pudo registrar el paciente", CONTROLLER_NAME);
             return;
         }
-
+    
         showPacientes();
         clearPaciente();
         ventanaPrincipal.showExitoCreateModel(CONTROLLER_NAME);

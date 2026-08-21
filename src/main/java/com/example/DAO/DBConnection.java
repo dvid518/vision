@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public class DBConnection {
     private static final String URL="jdbc:postgresql://localhost:5432/db_vision";
     private static final String USER="postgres";
-    private static final String PASSWORD="admin";
+    private static final String PASSWORD="123456";
 
     static {
         try {

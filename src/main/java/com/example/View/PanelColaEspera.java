@@ -85,8 +85,8 @@ public final class PanelColaEspera extends JPanel {
         panelControlCola.add(lblEstadoCola, BorderLayout.WEST);
         
         JPanel panelBotonesCola = new JPanel(new GridLayout(1, 2, 5, 5));
-        btnAtender = new JButton("Atender Siguiente");
-        btnEliminarCola = new JButton("Eliminar Seleccionado");
+        btnAtender = new JButton("Atender");
+        btnEliminarCola = new JButton("Eliminar");
         panelBotonesCola.add(btnAtender);
         panelBotonesCola.add(btnEliminarCola);
         panelControlCola.add(panelBotonesCola, BorderLayout.EAST);

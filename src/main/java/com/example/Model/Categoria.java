@@ -5,8 +5,8 @@ public class Categoria {
     private final String nombre;
 
     public Categoria(int idCategoria, String nombre) {
-        this.idCategoria=idCategoria;
-        this.nombre=nombre;
+        this.idCategoria = idCategoria;
+        this.nombre = nombre;
     }
 
     public int getIdCategoria() {
@@ -14,6 +14,11 @@ public class Categoria {
     }
 
     public String getNombre() {
+        return nombre;
+    }
+
+    @Override
+    public String toString() {
         return nombre;
     }
 }
